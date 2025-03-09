@@ -1,0 +1,56 @@
+<%- include('../../header') %>
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Ảnh bìa</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Danh sách ảnh bìa</h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <a href="/banner/add" class="btn btn-primary mb-3">Thêm mới</a>
+    <table class="table">
+      <thead class="table">
+        <tr>
+          <th>ID</th>
+          <th>Hình ảnh</th>
+          <th>Slogan</th>
+          <th>Ngôn ngữ</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (banner && banner.length > 0) { %>
+        <% banner.forEach(item => { %>
+        <tr>
+          <td><%= item.id %></td>
+          <td>
+            <img src="<%= item.imageUrl %>" alt="Banner" width="100">
+          </td>
+          <td><%= item.slogan %></td>
+          <td><%= item.language.name %></td>
+          <td>
+            <a href="/admin/banner/edit/<%= item.id %>" class="btn btn-warning btn-sm">Sửa</a>
+            <a href="/admin/banner/delete/<%= item.id %>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+          </td>
+        </tr>
+        <% }) %>
+        <% } else { %>
+        <tr>
+          <td colspan="5" class="text-center text-danger">Không có banner nào</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section><!-- /Starter Section Section -->
+<%- include('../../footer') %>

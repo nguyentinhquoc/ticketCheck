@@ -1,0 +1,61 @@
+<%- include('../../header') %>
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Ngôn ngữ</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Danh sách ngôn ngữ</h1>
+  </div><!-- End Section Title -->
+  <div class="container" data-aos="fade-up">
+    <form action="/language/pick" method="post">
+      <div>
+        <input type="hidden" name="id" id="codeInput">
+        <input type="text" id="searchInput" placeholder="Nhập tên hoặc mã ngôn ngữ..." class="form-control" style="margin-bottom: 10px;">
+        <ul id="languageList">
+          <% Languages.forEach(item => { %>
+          <li style=" cursor: pointer;  width: 100%;" class="form-control" onclick="selectLanguage('<%= item.id %>','<%= item.name %>')">
+            <img src="https://flagcdn.com/w40/<%= item.code ? item.code.toLowerCase() : '' %>.png" style="border-radius: 5px;" alt="">
+            (<%= item.code %>) <%= item.name %>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+      <button  class="btn btn-primary" id="submitCreate">Xác nhận</button>
+    </form>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const listItems = document.querySelectorAll("#languageList li");
+      searchInput.addEventListener("input", function() {
+        document.getElementById('submitCreate').disabled = true;
+        const searchText = this.value.toLowerCase();
+        listItems.forEach(li => {
+          const text = li.innerText.toLowerCase();
+          if (searchText && text.includes(searchText)) {
+            li.style.display = "block";
+          } else {
+            li.style.display = "none";
+          }
+        });
+      });
+
+      function selectLanguage(code, name) {
+        searchInput.value = name;
+        listItems.forEach(li => li.style.display = "none");
+        document.getElementById('codeInput').value = code
+        document.getElementById('submitCreate').disabled = false;
+      }
+    </script>
+  </div>
+</section>
+
+<%- include('../../footer') %>

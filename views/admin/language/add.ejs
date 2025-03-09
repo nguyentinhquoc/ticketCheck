@@ -1,0 +1,101 @@
+<%- include('../../header') %>
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Ngôn ngữ</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Thêm ngôn ngữ</h1>
+  </div><!-- End Section Title -->
+  <div class="container" data-aos="fade-up">  <style>
+        /* Tùy chỉnh dropdown */
+        .dropdown-item img {
+            width: 30px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+    <div class="container mt-5">
+        <form action="/banners" method="POST" enctype="multipart/form-data" class="p-4 shadow rounded bg-light">
+            <!-- Hình ảnh -->
+            <div class="mb-3">
+                <label for="imageUrl" class="form-label">Hình ảnh:</label>
+                <input type="file" class="form-control" id="imageUrl" name="imageUrl" required>
+            </div>
+
+            <!-- Slogan -->
+            <div class="mb-3">
+                <label for="slogan" class="form-label">Slogan:</label>
+                <textarea class="form-control" id="slogan" name="slogan" rows="3" required></textarea>
+            </div>
+
+            <!-- Ngôn ngữ (Dropdown tùy chỉnh) -->
+            <div class="mb-3">
+                <label for="language" class="form-label">Ngôn ngữ:</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Chọn ngôn ngữ
+                    </button>
+                    <ul class="dropdown-menu" id="languageDropdown">
+                        <!-- Các lựa chọn sẽ được thêm bằng JS -->
+                    </ul>
+                    <input type="hidden" id="language" name="languageId"> <!-- Input ẩn để lưu giá trị -->
+                </div>
+            </div>
+
+            <!-- Nút gửi -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Thêm Banner</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const languages = [
+            { id: 1, name: "Tiếng Việt", flag: "https://flagcdn.com/w40/vn.png" },
+            { id: 2, name: "Tiếng Anh", flag: "https://flagcdn.com/w40/gb.png" },
+            { id: 3, name: "Tiếng Nhật", flag: "https://flagcdn.com/w40/jp.png" }
+        ];
+
+        // Lấy phần tử dropdown
+        const languageDropdown = document.getElementById("languageDropdown");
+        const dropdownButton = document.getElementById("dropdownMenuButton");
+        const hiddenInput = document.getElementById("language");
+
+        // Thêm danh sách ngôn ngữ vào dropdown
+        languages.forEach(lang => {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `<a class="dropdown-item" href="#" data-id="${lang.id}">
+                <img src="${lang.flag}" alt="${lang.name}"> ${lang.name}
+            </a>`;
+            languageDropdown.appendChild(listItem);
+        });
+
+        // Xử lý chọn ngôn ngữ
+        document.querySelectorAll("#languageDropdown .dropdown-item").forEach(item => {
+            item.addEventListener("click", function(event) {
+                event.preventDefault();
+                const selectedId = this.getAttribute("data-id");
+                const selectedName = this.innerHTML;
+
+                // Cập nhật nút dropdown
+                dropdownButton.innerHTML = selectedName;
+
+                // Lưu giá trị vào input ẩn
+                hiddenInput.value = selectedId;
+            });
+        });
+    </script></div>
+</section><!-- /Starter Section Section -->
+
+
+<%- include('../../footer') %>

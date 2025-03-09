@@ -1,0 +1,23 @@
+<%- include('../../header') %>
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Chi tiết</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1><%= detail.title %></h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <%- detail.content %>
+  </div>
+</section><!-- /Starter Section Section -->
+<%- include('../../footer') %>

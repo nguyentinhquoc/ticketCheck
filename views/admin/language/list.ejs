@@ -1,0 +1,110 @@
+<%- include('../../header') %>
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Ngôn ngữ</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Danh sách ngôn ngữ</h1>
+  </div><!-- End Section Title -->
+  <div class="container" data-aos="fade-up">
+    <form action="/language/add" method="post">
+      <div>
+        <input type="hidden" name="code" id="codeInput">
+        <input type="text" id="searchInput" placeholder="Nhập tên hoặc mã ngôn ngữ..." class="form-control" style="margin-bottom: 10px;">
+        <ul id="languageList">
+          <% LanguagesCreate.forEach(item => { %>
+          <li style="display: none; cursor: pointer;  width: 100%;" class="form-control" onclick="selectLanguage('<%= item.code %>','<%= item.name %>')">
+            <img src="https://flagcdn.com/w40/<%= item.code ? item.code.toLowerCase() : '' %>.png" style="border-radius: 5px;" alt="">
+            (<%= item.code %>) <%= item.name %>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+      <button disabled class="btn btn-primary" id="submitCreate">Thêm ngôn ngữ</button>
+
+
+
+    </form>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const listItems = document.querySelectorAll("#languageList li");
+      searchInput.addEventListener("input", function() {
+        document.getElementById('submitCreate').disabled = true;
+        const searchText = this.value.toLowerCase();
+        listItems.forEach(li => {
+          const text = li.innerText.toLowerCase();
+          if (searchText && text.includes(searchText)) {
+            li.style.display = "block";
+          } else {
+            li.style.display = "none";
+          }
+        });
+      });
+
+      function selectLanguage(code, name) {
+        searchInput.value = name;
+        listItems.forEach(li => li.style.display = "none");
+        document.getElementById('codeInput').value = code
+        document.getElementById('submitCreate').disabled = false;
+      }
+    </script>
+    <table class="table">
+      <thead class="table">
+        <tr>
+          <th>ID</th>
+          <th>Ngôn ngữ</th>
+          <th>Mã ngôn ngữ</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (Languages && Languages.length > 0) { %>
+        <% Languages.forEach((item, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td> <img src="https://flagcdn.com/w40/<%= item.code ? item.code.toLowerCase() : '' %>
+.png" style="border-radius: 5px;" alt=""> <%= item.name %></td>
+          <td><%= item.code %></td>
+          <td class="d-flex">
+            <div class="form-check form-switch">
+              <input class="form-check-input toggle-status" type="checkbox" data-id="<%= item.id %>" <%= item.status ? 'checked' : '' %>>
+            </div>
+            <!-- <a href="/language/delete/<%= item.code %>" class="btn btn-danger btn-sm">Xóa</a> -->
+          </td>
+        </tr>
+        <% }) %>
+        <% } else { %>
+        <tr>
+          <td colspan="4" class="text-center text-danger">Không có ngôn ngữ nào</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<script>
+  document.querySelectorAll('.toggle-status').forEach(item => {
+  item.addEventListener('change', async function () {
+    const id = this.getAttribute('data-id');
+    const newStatus = this.checked;
+
+    // Gửi yêu cầu cập nhật trạng thái
+    await fetch(`/language/changeStatus/${id}`, { method: 'GET' });
+
+    console.log(`Cập nhật ID ${id} thành trạng thái: ${newStatus}`);
+  });
+});
+
+</script>
+
+<%- include('../../footer') %>

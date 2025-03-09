@@ -1,0 +1,116 @@
+<%- include('header') %>
+
+<!-- Hero Section -->
+<section id="hero" class="hero section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+        <h1 data-aos="fade-up">Map</h1>
+        <p data-aos="fade-up" data-aos-delay="100">
+        </p>
+        <ul class="list-group">
+          <% areas.forEach(area => { %>
+          <li class="list-group-item">
+            <strong class="toggle-area d-block py-2">
+              <i class=" bi bi-chevron-right me-2"></i> <a href="/articles/l/<%= area.id %>"><%= area.code %>. <%= area.name %></a></strong>
+            <ul class="sub-list list-group ms-3">
+              <!-- Thêm class list-group & ms-3 để lùi vào -->
+              <%
+        let stt = 0
+        area.areaSmalls.forEach(areaSmall => { %>
+              <li class="list-group-item">
+                <a href="/articles/m/<%= areaSmall.id %>"> <%= area.code %>.<%= stt+=1 %>. <%= areaSmall.name %>
+                </a>
+              </li>
+              <% }) %>
+            </ul>
+          </li>
+          <% }) %>
+        </ul>
+
+        <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
+          <!-- <a class="btn-get-started" href="" class="glightbox btn-watch-video d-flex align-items-center justify-content-center ms-0 ms-md-4 mt-4 mt-md-0"><i class="bi bi-play-circle"></i></a> -->
+        </div>
+      </div>
+      <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+        <img src="/image/map.png" class="img-fluid animated" alt="" style="border-radius: 20px;">
+      </div>
+    </div>
+  </div>
+</section>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+
+      $("#addForm").click(function() {
+        $(".formContainer").toggle(); // Ẩn/hiện form khi click vào nút
+      });
+
+      // Ẩn danh sách con khi tải trang
+      $(".formContainer").hide();
+      $(".sub-list").hide();
+
+      // Khi click vào tiêu đề khu vực
+      $(".toggle-area").click(function() {
+        $(this).next(".sub-list").slideToggle(); // Ẩn/hiện danh sách con
+        $(this).find("i").toggleClass("bi-chevron-right bi-chevron-down"); // Đổi icon
+      });
+    });
+  </script>
+
+<!-- <section id="alt-features" class="alt-features section">
+      <div class="container">
+        <div class="row gy-5">
+          <div class="col-xl-7 d-flex order-2 order-xl-1" data-aos="fade-up" data-aos-delay="200">
+            <div class="row align-self-center gy-5">
+              <div class="col-md-6 icon-box">
+                <i class="bi bi-award"></i>
+                <div>
+                  <h4>Corporis voluptates sit</h4>
+                  <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
+                </div>
+              </div>
+              <div class="col-md-6 icon-box">
+                <i class="bi bi-card-checklist"></i>
+                <div>
+                  <h4>Ullamco laboris nisi</h4>
+                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
+                </div>
+              </div>
+              <div class="col-md-6 icon-box">
+                <i class="bi bi-dribbble"></i>
+                <div>
+                  <h4>Labore consequatur</h4>
+                  <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
+                </div>
+              </div>
+              <div class="col-md-6 icon-box">
+                <i class="bi bi-filter-circle"></i>
+                <div>
+                  <h4>Beatae veritatis</h4>
+                  <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
+                </div>
+              </div>
+              <div class="col-md-6 icon-box">
+                <i class="bi bi-lightning-charge"></i>
+                <div>
+                  <h4>Molestiae dolor</h4>
+                  <p>Et fuga et deserunt et enim. Dolorem architecto ratione tensa raptor marte</p>
+                </div>
+              </div>
+              <div class="col-md-6 icon-box">
+                <i class="bi bi-patch-check"></i>
+                <div>
+                  <h4>Explicabo consectetur</h4>
+                  <p>Est autem dicta beatae suscipit. Sint veritatis et sit quasi ab aut inventore</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-5 d-flex align-items-center order-1 order-xl-2" data-aos="fade-up" data-aos-delay="100">
+            <img src="assets/img/alt-features.png" class="img-fluid" alt="">
+          </div>
+        </div>
+      </div>
+    </section> -->
+<%- include('footer') %>

@@ -1,0 +1,36 @@
+<%- include('../header') %>
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Tạo mã QR</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Tạo mã QR</h1>
+  </div><!-- End Section Title -->
+  <div class="container" data-aos="fade-up">
+    <form action="" method="get" class="p-3 border rounded shadow bg-light">
+      <div style="width: fit-content; margin: 0 auto;">
+        <% if (typeof qrCode !== 'undefined' && qrCode) { %>
+        <img src="<%= qrCode %>" alt="QR Code" width="200px">
+        <% } %>
+      </div>
+      <div class="mb-3">
+        <label for="qrText" class="form-label fw-bold">Nhập ký tự cần tạo QR</label>
+        <input type="text" name="text" id="qrText" class="form-control" placeholder="Nhập nội dung...">
+      </div>
+      <button class="btn btn-primary w-100">Tạo mã</button>
+    </form>
+
+
+
+  </div>
+</section>
+<%- include('../footer') %>

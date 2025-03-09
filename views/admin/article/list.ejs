@@ -1,0 +1,63 @@
+<%- include('../../header') %>
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="index.html">Trang chủ</a></li>
+        <li class="current">Bài viết</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Danh sách bài viết</h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <a href="/articles/add" class="btn btn-primary mb-3">Thêm mới</a>
+    <table class="table">
+      <thead class="table">
+        <tr>
+          <th>ID</th>
+          <th>Tiêu đề</th>
+          <th>Ngôn ngữ</th>
+          <th>Vị trí</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% articles.forEach((article, key) => { %>
+        <tr>
+          <td><%=key+1%></td>
+          <td><%=article.title%></td>
+          <td><img style="border-radius: 5px;" src="https://flagcdn.com/w40/<%=article.language.code.toLowerCase()%>
+.png" alt=""><%=article.language.code%></td>
+          <td><%= article.area?.name || article.areaSmall?.name || '' %> </td>
+          <td>
+            <div class="form-check form-switch">
+              <input class="form-check-input toggle-status" type="checkbox" data-id="<%= article.id %>" <%= article.status ? 'checked' : '' %>>
+            </div>
+          </td>
+        </tr>
+        <%})%>
+      </tbody>
+    </table>
+  </div>
+</section>
+<script>
+  document.querySelectorAll('.toggle-status').forEach(item => {
+    item.addEventListener('change', async function() {
+      const id = this.getAttribute('data-id');
+      const newStatus = this.checked;
+
+      // Gửi yêu cầu cập nhật trạng thái
+      await fetch(`/articles/changeStatus/${id}`, {
+        method: 'GET'
+      });
+    });
+  });
+</script>
+<%- include('../../footer') %>

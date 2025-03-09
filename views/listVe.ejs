@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm bài viết</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+</head>
+<body>
+    <h2>Nhập nội dung bài viết</h2>
+    <input type="text" id="title" placeholder="Tiêu đề">
+    <textarea id="editor"></textarea>
+    <button onclick="submitArticle()">Lưu bài viết</button>
+
+    <script>
+        let editorInstance;
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                editorInstance = editor;
+            })
+            .catch(error => console.error(error));
+
+        function submitArticle() {
+            let title = document.getElementById("title").value;
+            let content = editorInstance.getData();
+
+            fetch("http://localhost:3000/articles/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content })
+            })
+            .then(res => res.json())
+            .then(data => alert("Bài viết đã lưu!"));
+        }
+    </script>
+</body>
+</html>
