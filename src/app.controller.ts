@@ -32,6 +32,7 @@ export class AppController {
     //   console.log(result)
     // });
   }
+
   @Get('CreateQrCode')
   @Render('admin/createQR')
   async generateQRCode (@Query('text') text: string) {

@@ -6,6 +6,7 @@ import { CreateArticleDto } from './dto/create-article.dto'
 import { Area } from 'src/area/entities/area.entity'
 import { AreaSmall } from 'src/area_small/entities/area_small.entity'
 import { Language } from 'src/language/entities/language.entity'
+import { UpdateArticleDto } from './dto/update-article.dto'
 
 @Injectable()
 export class ArticleService {
@@ -22,6 +23,13 @@ export class ArticleService {
     @InjectRepository(Language)
     private readonly languageRepository: Repository<Language>
   ) {}
+  async edit (id: number, updateArticleDto: UpdateArticleDto): Promise<void> {
+    const article = await this.articleRepository.findOne({ where: { id } })
+    article.title = updateArticleDto.title
+    article.content = updateArticleDto.content
+    article.status = updateArticleDto.status
+    await this.articleRepository.save(article)
+  }
 
   async changeStatus (id: number): Promise<void> {
     const article = await this.articleRepository.findOne({ where: { id } })
@@ -57,7 +65,10 @@ export class ArticleService {
   }
 
   async findOne (id: number): Promise<Article> {
-    return this.articleRepository.findOne({ where: { id } })
+    return this.articleRepository.findOne({
+      where: { id },
+      relations: ['area', 'areaSmall', 'language']
+    })
   }
   async findAll (languageLocal) {
     return this.articleRepository.find({

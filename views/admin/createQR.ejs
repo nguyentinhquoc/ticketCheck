@@ -5,7 +5,7 @@
   <nav class="breadcrumbs">
     <div class="container">
       <ol>
-        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="/">Trang chủ</a></li>
         <li class="current">Tạo mã QR</li>
       </ol>
     </div>
@@ -24,13 +24,10 @@
       </div>
       <div class="mb-3">
         <label for="qrText" class="form-label fw-bold">Nhập ký tự cần tạo QR</label>
-        <input type="text" name="text" id="qrText" class="form-control" placeholder="Nhập nội dung...">
+        <input type="text" name="text" id="qrText" class="form-control" placeholder="Nhập nội dung..." value="http://localhost:3000/language/pick">
       </div>
       <button class="btn btn-primary w-100">Tạo mã</button>
     </form>
-
-
-
   </div>
 </section>
 <%- include('../footer') %>

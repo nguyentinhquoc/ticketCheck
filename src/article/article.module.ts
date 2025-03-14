@@ -11,7 +11,7 @@ import { Language } from 'src/language/entities/language.entity';
 import { Area } from 'src/area/entities/area.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article, Area, AreaSmall, Language]),LanguageModule,AreaModule,AreaSmallModule], // Thêm dòng này
+  imports: [TypeOrmModule.forFeature([Article, Area, AreaSmall, Language]),LanguageModule,AreaModule,AreaSmallModule], //Đây là
   controllers: [ArticleController],
   providers: [ArticleService],
   exports: [ArticleService],

@@ -1,0 +1,65 @@
+<%- include('../../header') %>
+<% function formatDate(date) { %>
+<%= ('0' + date.getDate()).slice(-2) %>/
+<%= ('0' + (date.getMonth() + 1)).slice(-2) %>/
+<%= date.getFullYear() %>
+<%= ('0' + date.getHours()).slice(-2) %>:
+<%= ('0' + date.getMinutes()).slice(-2) %>:
+<%= ('0' + date.getSeconds()).slice(-2) %>
+<% } %>
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="/">Trang chủ</a></li>
+        <li class="current">Vé đã bán</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Danh sách vé đã bán</h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <table class="table">
+      <thead class="table">
+        <tr>
+          <th>ID</th>
+          <th>Người mua</th>
+          <th>Người bán</th>
+          <th>Ghế</th>
+          <th>Ngày bán</th>
+          <th>Sự kiện</th>
+          <th>Giảm giá</th>
+          <th>Giảm bán</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (tickets && tickets.length > 0) { %>
+        <% tickets.forEach((item, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= item.user.name %></td>
+          <td><%= item.account.user_name %></td>
+          <td><%= item.seat %></td>
+          <td><%= formatDate(item.CreatedAt) %></td>
+          <td><%= item.event.name %></td>
+          <td><%= item.discount %>%</td>
+          <td><%= (item.event.price * (1 - item.discount/100)).toLocaleString('vi-VN', {
+            style: 'currency', currency: 'VND' }) %>
+          </tr>
+          <% }) %>
+          <% } else { %>
+          <tr>
+            <td colspan="4" class="text-center text-danger">Không có vé nào được bán
+              ra</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <%- include('../../footer') %>

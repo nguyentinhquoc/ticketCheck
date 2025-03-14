@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head></head>
+
+<body>
+
+  <button onclick="check()">submit</button>
+  <script>
+    function check() {
+      const list = []
+      Array.from(document.getElementsByClassName("selected")).forEach(seat => {
+        let seatPick = seat.parentElement.getElementsByTagName("strong")[0].textContent + seat.textContent
+        list.push(seatPick)
+      })
+      console.log(list)
+    }
+    const seatLayout = {
+      'A': 11,
+      'B': 12,
+      'C': 13,
+      'D': 12,
+      'E': 11,
+      'G': 12,
+      'H': 13,
+      'I': 12,
+      'K': 11,
+      'L': 10,
+      'M': 13,
+      'N': 12,
+    };
+    const seatMap = document.getElementById("seatMap");
+    for (let row in seatLayout) {
+      let rowDiv = document.createElement("div");
+      rowDiv.classList.add("row");
+      rowDiv.innerHTML = `<strong>${row}</strong>`;
+      const totalSeats = seatLayout[row];
+      const middle = Math.ceil(totalSeats / 2);
+      for (let i = middle; i >= 1; i--) {
+        let seat = document.createElement("div");
+        seat.classList.add("seat");
+        seat.textContent = i * 2 - 1;
+        seat.onclick = () => {
+          if (!seat.classList.contains("taken")) {
+            seat.classList.toggle("selected");
+          }
+        };
+        rowDiv.appendChild(seat);
+      }
+      // Thêm ghế số chẵn (bên phải)
+      for (let i = 1; i <= Math.floor(totalSeats / 2); i++) {
+        let seat = document.createElement("div");
+        seat.classList.add("seat");
+        seat.textContent = i * 2;
+        seat.onclick = () => {
+          if (!seat.classList.contains("taken")) {
+            seat.classList.toggle("selected");
+          }
+        };
+        rowDiv.appendChild(seat);
+      }
+      seatMap.appendChild(rowDiv);
+    }
+  </script>
+
+</body>
+
+</html>

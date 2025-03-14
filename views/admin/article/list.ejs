@@ -6,7 +6,7 @@
   <nav class="breadcrumbs">
     <div class="container">
       <ol>
-        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="/">Trang chủ</a></li>
         <li class="current">Bài viết</li>
       </ol>
     </div>
@@ -26,6 +26,7 @@
           <th>Ngôn ngữ</th>
           <th>Vị trí</th>
           <th>Hành động</th>
+          <th>Trạng thái</th>
         </tr>
       </thead>
       <tbody>
@@ -38,8 +39,16 @@
           <td><%= article.area?.name || article.areaSmall?.name || '' %> </td>
           <td>
             <div class="form-check form-switch">
-              <input class="form-check-input toggle-status" type="checkbox" data-id="<%= article.id %>" <%= article.status ? 'checked' : '' %>>
+              <a href="/articles/<%=article.id%>"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M3 21h18" stroke="#f53e19" stroke-width="4" stroke-linecap="round"  />
+  <path d="M16.5 3a2.1 2.1 0 013 0l1.5 1.5a2.1 2.1 0 010 3L8 20H3v-5l13.5-12z" stroke="#f53e19" stroke-width="4" stroke-linejoin="round"/>
+</svg>
+Sửa
+</a>
             </div>
+          </td>
+          <td>
+              <input class="form-check-input toggle-status" type="checkbox" data-id="<%= article.id %>" <%= article.status ? 'checked' : '' %>>
           </td>
         </tr>
         <%})%>

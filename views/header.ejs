@@ -11,13 +11,14 @@
   <link href="/image/logoNhaHat.jpg" rel="apple-touch-icon">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="/assets/css/main.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="index-page">
@@ -31,30 +32,27 @@
       </a>
       <nav id="navmenu" class="navmenu btn">
         <ul>
-<script>
-  function getCookie(name) {
-    const cookies = document.cookie.split('; ');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].split('=');
-      if (cookie[0] === name) {
-        return decodeURIComponent(cookie[1]);
-      }
-    }
-    return null;
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    console.log(typeof getCookie); // Kiểm tra hàm có tồn tại không
-    const lang = getCookie('language'); // Gọi hàm sau khi khai báo
-    console.log('Ngôn ngữ từ cookie:', lang);
-  });
-</script>
-         <li class="dropdown"><a href="/language/pick"><span><img src="/assets/language-svgrepo-com.svg" alt="" width="20px"></span></a>
-         <% if(admin){ %>
+          <script>
+            function getCookie(name) {
+              const cookies = document.cookie.split('; ');
+              for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].split('=');
+                if (cookie[0] === name) {
+                  return decodeURIComponent(cookie[1]);
+                }
+              }
+              return null;
+            }
+          </script>
+          <li class="dropdown"><a href="/language/pick"><span><img src="/assets/language-svgrepo-com.svg" alt="" width="20px"></span></a>
+            <% if(login){ %>
           <li class="dropdown"><a href="#"><span>Quản lý </span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
+              <li><a href="/ticket/check">Soát vé</a></li>
+              <li><a href="/ticket">Bán vé</a></li>
+              <li><a href="/event">Tạo lịch diễn</a></li>
               <li><a href="/language">Ngôn ngữ</a></li>
-              <li><a href="/area">Vị trí</a></li>
+              <li><a href="/area">Điểm chạm</a></li>
               <li><a href="/articles">Bài viết</a></li>
               <li><a href="/banner">Ảnh bìa</a></li>
               <li><a href="/CreateQrCode?text=">Tạo mã QR</a></li>

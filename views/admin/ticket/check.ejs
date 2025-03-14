@@ -1,0 +1,79 @@
+<%- include('../../header') %>
+<% function formatDate(date) { %>
+<%= ('0' + date.getDate()).slice(-2) %>/
+<%= ('0' + (date.getMonth() + 1)).slice(-2) %>/
+<%= date.getFullYear() %>
+<%= ('0' + date.getHours()).slice(-2) %>:
+<%= ('0' + date.getMinutes()).slice(-2) %>:
+<%= ('0' + date.getSeconds()).slice(-2) %>
+<% } %>
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="/">Trang chủ</a></li>
+        <li class="current">Vé đã bán</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Soát vé</h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <form action="" method="post">
+      <div class="input-group mb-3">
+        <input type="text" name="code" class="form-control" placeholder="Nhập mã vé" required>
+        <button class="btn btn-primary" type="submit">Kiểm tra</button>
+      </div>
+    </form>
+    <div class="inforTicket">
+    <% if (tickets && Object.keys(tickets).length > 0) { %>
+    <% if (tickets.status) { %>
+    <div class="card mt-3 " style="border:1px solid green">
+      <% }else{%>
+      <div class="card mt-3" style="border:1px solid red">
+        <%} %>
+        <div class="card-body">
+          <h5 class="card-title">Thông tin vé</h5>
+          <p>Mã vé: <%= tickets.code %></p>
+          <p>Trạng thái: <%= formatDate(tickets.CreatedAt) %></p>
+          <div class="mt-3">
+            <% if (tickets.status) { %>
+            <button type="submit" name="action" value="accept" class="btn btn-success" onclick="closeTicket(1)">Cho vào</button>
+            <% } %>
+            <button type="submit" name="action" value="reject" class="btn btn-danger" onclick="closeTicket(0)">Không cho vào</button>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    </div>
+    <script>
+      function closeTicket(a) {
+        if (a == 1) {
+          fetch('/ticket/changeStatus', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                code: '<%= tickets.code %>'
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const infoTicket = document.querySelector('.inforTicket');
+                if (infoTicket) {
+                  infoTicket.style.display = 'none';
+                }
+            });
+        }
+          document.querySelector('.inforTicket').style.display = 'none';
+      }
+    </script>
+</section>
+
+<%- include('../../footer') %>

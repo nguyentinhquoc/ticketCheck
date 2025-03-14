@@ -6,7 +6,8 @@
   <nav class="breadcrumbs">
     <div class="container">
       <ol>
-        <li><a href="/">Trang chủ</a></li>
+                <li><a href="/">Trang chủ</a></li>
+
         <li class="current">Bài viết</li>
       </ol>
     </div>
@@ -14,7 +15,7 @@
 </div>
 <section id="starter-section" class="starter-section section">
   <div class="container section-title" data-aos="fade-up">
-    <h1>Thêm mới bài viết</h1>
+    <h1>Chỉnh sửa bài viết</h1>
   </div>
   <div class="container" data-aos="fade-up">
     <style>
@@ -23,16 +24,16 @@
         display: none;
       }
     </style>
-    <form action="/articles" method="post">
+    <form action="/articles/edit/<%= articleDetail.id%>" method="post">
       <div class="form-group">
         <label for="">Tiêu đề</label>
-        <input name="title" type="text" class="form-control" />
+        <input name="title" type="text" class="form-control" value="<%= articleDetail.title%>" />
       </div>
       <div class="form-group">
         <label for="">Ngôn ngữ</label>
         <select name="language" id="" class="form-select">
           <% Languages.forEach(language => { %>
-          <option value="<%=language.id%>">
+          <option value="<%= language.id %>" <%= articleDetail.language.id == language.id ? 'selected' : '' %>>
             ( <%=language.code%> ) <%=language.name%>
           </option>
           <%})%>
@@ -43,7 +44,7 @@
         <select name="area" id="selectArea" class="form-select">
           <option value=""></option>
           <% areas.forEach(area => { %>
-          <option value="<%= area.id %>">
+          <option value="<%= area.id %>" <%= articleDetail.area && articleDetail.area.id == area.id ? 'selected' : '' %>>
             <%= area.code %>. <%= area.name %>
           </option>
           <% }) %>
@@ -52,20 +53,20 @@
         <select name="areaSmall" id="selectAreaSmall" class="form-select">
           <option value=""></option>
           <% areaSmalls.forEach(areaSmall => { %>
-          <option value="<%= areaSmall.id %>">
+          <option value="<%= areaSmall.id %>"<%= articleDetail.areaSmall && articleDetail.areaSmall.id == areaSmall.id ? 'selected' : '' %>>
             (<%= areaSmall.area.code %>) <%= areaSmall.name %>
           </option>
           <% }) %>
         </select>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-          $(document).ready(function () {
-            $('#selectArea').change(function () {
+          $(document).ready(function() {
+            $('#selectArea').change(function() {
               if ($(this).val() !== 'null') {
                 $('#selectAreaSmall').val('null') // Reset select 2
               }
             })
-            $('#selectAreaSmall').change(function () {
+            $('#selectAreaSmall').change(function() {
               if ($(this).val() !== 'null') {
                 $('#selectArea').val('null') // Reset select 1
               }
@@ -74,7 +75,7 @@
         </script>
       </div>
       <label for="">Nội dung</label>
-      <textarea name="content" id="default"></textarea>
+      <textarea name="content" id="default"><%=articleDetail.content  %></textarea>
       <button class="btn btn-primary">Xác nhận</button>
     </form>
     <script src="/tinymce/tinymce.min.js"></script>
@@ -105,8 +106,7 @@
           'template',
           'codesample'
         ],
-        toolbar:
-          'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
+        toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
           'bullist numlist outdent indent | link image media | print preview fullscreen | ' +
           'forecolor backcolor emoticons',
         menu: {
@@ -116,8 +116,7 @@
           }
         },
         menubar: 'favs file edit view insert format tools table',
-        content_style:
-          'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}'
+        content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}'
       })
     </script>
   </div>

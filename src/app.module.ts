@@ -18,6 +18,13 @@ import { Banner } from './banner/entities/banner.entity'
 import { APP_GUARD } from '@nestjs/core'
 import { CommonGuard } from './common/common.guard'
 import { GlobalVariablesMiddleware } from './global-variables.middleware'
+import { TicketModule } from './ticket/ticket.module'
+import { EventModule } from './event/event.module'
+import { Ticket } from './ticket/entities/ticket.entity'
+import { Event } from './event/entities/event.entity'
+import { User } from './user/entities/user.entity'
+import { UserModule } from './user/user.module'
+import { JwtService } from '@nestjs/jwt'
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -27,7 +34,17 @@ import { GlobalVariablesMiddleware } from './global-variables.middleware'
       username: 'root',
       password: '',
       database: 'ticket_db',
-      entities: [Article, Area, Language, Account, AreaSmall, Banner],
+      entities: [
+        Article,
+        Area,
+        Language,
+        Account,
+        AreaSmall,
+        Banner,
+        Ticket,
+        Event,
+        User
+      ],
       synchronize: true
     }),
     ArticleModule,
@@ -35,16 +52,22 @@ import { GlobalVariablesMiddleware } from './global-variables.middleware'
     LanguageModule,
     AccountModule,
     AreaSmallModule,
-    BannerModule
+    BannerModule,
+    TicketModule,
+    EventModule,
+    UserModule,
   ],
   controllers: [AppController, ArticleController],
-  providers: [AppService, {
-    provide: APP_GUARD,
-    useClass: CommonGuard,
-  },]
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: CommonGuard
+    }
+  ]
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(GlobalVariablesMiddleware).forRoutes('*'); // Áp dụng cho mọi route
+  configure (consumer: MiddlewareConsumer) {
+    consumer.apply(GlobalVariablesMiddleware).forRoutes('*')
   }
 }

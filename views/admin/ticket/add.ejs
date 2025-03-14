@@ -1,0 +1,353 @@
+<%- include('../../header') %>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sơ Đồ Chỗ Ngồi</title>
+<style>
+  .stage {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    border: 1px solid #f53e19;
+    padding: 10px;
+  }
+
+  .seat-map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .row {
+    display: flex;
+    margin: 2px 0;
+  }
+
+  .seat {
+    width: 70px;
+    height: 40px;
+    border: 1px solid #f53e19;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+    cursor: pointer;
+  }
+
+  .seat.taken {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+
+  .seat.selected {
+    background-color: #f53e19;
+    color: white;
+  }
+</style>
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="/">Trang chủ</a></li>
+        <li class="current">Tạo lịch diễn</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Tạo vé</h1>
+  </div><!-- End Section Title -->
+  <div class="container mt-5">
+    <form action="/ticket/add" method="POST">
+
+      <!-- Tên người mua -->
+      <div class="mb-3">
+        <div class="row mb-3">
+
+          <label for="searchInput" class="form-label">Tên người mua:</label>
+          <input type="hidden" name="userId" id="userId">
+          <input type="text" class="form-control" id="searchInput" name="name" required>
+          <ul id="usersList">
+            <% users.forEach(item => { %>
+            <li style="display: none; cursor: pointer;  width: 100%;" class="form-control" onclick="selectusers('<%= item.name %>','<%= item.phone %>','<%= item.email %>','<%= item.id %>')">
+              <%= item.name %> (<%= item.email %> - <%= item.phone %>)
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+        <!-- Email và Số điện thoại (2 columns) -->
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email">
+          </div>
+          <div class="col-md-6">
+            <label for="phone" class="form-label">Số điện thoại:</label>
+            <input type="tel" class="form-control" id="phone" name="phone">
+          </div>
+        </div>
+        <!-- Chọn sự kiện -->
+        <div class="row mb-3">
+          <label for="event" class="form-label">Sự kiện:</label>
+          <select onchange="filterSeatMap()" class="form-control" id="event" name="eventId" required>
+            <option value></option>
+            <% events.forEach(function(event) { %>
+            <option value="<%= event.id %>" data-price="<%= event.price %>"><%= event.name
+              %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="seat-map" style="display: none;">
+          <div class="stage">SÂN KHẤU</div>
+          <div class="seat-map" id="seatMap"></div>
+          <p class="btn btn-primary w-100 " style="background-color: #0d6efd !important;" onclick="check()">Chọn ghế</p>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="discount" class="form-label">Giảm giá(%):</label>
+            <input type="number" class="form-control" id="discount" oninput="check2()" name="discount" value="0" min="0">
+          </div>
+          <div class="col-md-6">
+            <label for="seat" class="form-label">Ghế:</label>
+            <input type="text" class="form-control" id="seatRender" name="seat" min="0" disabled>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Chi tiết thanh toán</h5>
+                <div class="row">
+                  <div class="col-8">Giá vé:</div>
+                  <div class="col-4 text-end" id="basePrice">0 VNĐ</div>
+                </div>
+                <div class="row">
+                  <div class="col-8">Số lượng:</div>
+                  <div class="col-4 text-end" id="quantity">0</div>
+                </div>
+                <div class="row">
+                  <div class="col-8">Giảm giá:</div>
+                  <div class="col-4 text-end" id="discountAmount">0 VNĐ</div>
+                </div>
+                <hr>
+                <div class="row fw-bold">
+                  <div class="col-8">Tổng cộng:</div>
+                  <div class="col-4 text-end" id="totalPrice">0 VNĐ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Nút gửi -->
+      <button type="submit" class="btn btn-primary btn-lg w-100 p-3" onclick="return confirm('Hãy chắc chắn dữ liệu đã chính xác !')">Xác nhận</button>
+    </form>
+  </div>
+  </div>
+  <script>
+    seatMap = document.getElementById('seat-map');
+    async function filterSeatMap() {
+      const eventSelect = document.getElementById('event');
+      if (eventSelect.value) {
+        try {
+          const response = await fetch(`http://localhost:3000/ticket/${eventSelect.value}`);
+          const data = await response.json();
+          daChon = data;
+        } catch (error) {
+          console.error('Error:', error);
+        }
+        daChon = Array.from(daChon.tickets);
+        console.log(daChon)
+        Array.from(seatMap.getElementsByClassName('seat')).forEach(seat => {
+          if (daChon.includes(seat.parentElement.getElementsByTagName('strong')[0].textContent + seat.textContent)) {
+            seat.classList.add('taken');
+          } else {
+            seat.classList.remove('taken');
+          }
+        });
+        document.querySelector('.seat-map').style.display = 'block';
+      } else {
+        document.querySelector('.seat-map').style.display = 'none';
+      }
+    }
+  </script>
+  <!-- seat map -->
+</section>
+<script>
+  //seatmap
+  function check() {
+    const list = []
+    Array.from(document.getElementsByClassName("selected")).forEach(seat => {
+      let seatPick = seat.parentElement.getElementsByTagName("strong")[0].textContent + seat.textContent
+      let input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'seat[]';
+      input.value = seatPick;
+      input.className = 'seatPick';
+      document.querySelector('form').appendChild(input);
+      list.push(seatPick)
+    })
+    document.getElementById('seatRender').value = list
+    document.querySelector('.seat-map').style.display = 'none';
+    const selectedOption = document.getElementById('event').selectedOptions[0];
+    const price = selectedOption.getAttribute('data-price');
+    const quantity = list.length;
+    const discount = Number(document.getElementById('discount').value);
+    const basePrice = Number(price);
+    const discountAmount = (quantity * price) * discount / 100;
+    const totalPrice = (quantity * price) - discountAmount;
+    document.getElementById('basePrice').textContent = basePrice.toLocaleString() + ' VNĐ';
+    document.getElementById('quantity').textContent = quantity;
+    document.getElementById('discountAmount').textContent = discountAmount.toLocaleString() + ' VNĐ';
+    document.getElementById('totalPrice').textContent = totalPrice.toLocaleString() + ' VNĐ';
+  }
+  function check2() {
+    const list = []
+    Array.from(document.getElementsByClassName("selected")).forEach(seat => {
+      let seatPick = seat.parentElement.getElementsByTagName("strong")[0].textContent + seat.textContent
+      list.push(seatPick)
+    })
+    document.querySelector('.seat-map').style.display = 'none';
+    const selectedOption = document.getElementById('event').selectedOptions[0];
+    const price = selectedOption.getAttribute('data-price');
+    const quantity = list.length;
+    const discount = Number(document.getElementById('discount').value);
+    const basePrice = Number(price);
+    const discountAmount = (quantity * price) * discount / 100;
+    const totalPrice = (quantity * price) - discountAmount;
+    document.getElementById('basePrice').textContent = basePrice.toLocaleString() + ' VNĐ';
+    document.getElementById('quantity').textContent = quantity;
+    document.getElementById('discountAmount').textContent = discountAmount.toLocaleString() + ' VNĐ';
+    document.getElementById('totalPrice').textContent = totalPrice.toLocaleString() + ' VNĐ';
+  }
+
+  const seatLayout = {
+    'A': 11,
+    'B': 12,
+    'C': 13,
+    'D': 12,
+    'E': 11,
+    'G': 12,
+    'H': 13,
+    'I': 12,
+    'K': 11,
+    'L': 10,
+    'M': 13,
+    'N': 12,
+  };
+  const seatMap = document.getElementById("seatMap");
+  for (let row in seatLayout) {
+    let rowDiv = document.createElement("div");
+    rowDiv.classList.add("row");
+    rowDiv.innerHTML = `<strong>${row}</strong>`;
+    const totalSeats = seatLayout[row];
+    const middle = Math.ceil(totalSeats / 2);
+    for (let i = middle; i >= 1; i--) {
+      let seat = document.createElement("div");
+      seat.classList.add("seat");
+      seat.textContent = i * 2 - 1;
+      seat.onclick = () => {
+        if (!seat.classList.contains("taken")) {
+          seat.classList.toggle("selected");
+        }
+      };
+      rowDiv.appendChild(seat);
+    }
+    // Thêm ghế số chẵn (bên phải)
+    for (let i = 1; i <= Math.floor(totalSeats / 2); i++) {
+      let seat = document.createElement("div");
+      seat.classList.add("seat");
+      seat.textContent = i * 2;
+      seat.onclick = () => {
+        if (!seat.classList.contains("taken")) {
+          seat.classList.toggle("selected");
+        }
+      };
+      rowDiv.appendChild(seat);
+    }
+    seatMap.appendChild(rowDiv);
+  }
+  // validate
+  document.querySelector('form').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Ngăn form submit ngay lập tức
+    console.log(123)
+    const eventId = document.getElementById('event').value;
+    const searchInput = document.getElementById('searchInput').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const discount = Number(document.getElementById('discount').value);
+    let isValid = true;
+    const errors = [];
+    if (!eventId) {
+      errors.push('Vui lòng chọn sự kiện');
+      isValid = false;
+    }
+    // Validate searchInput
+    if (!searchInput || searchInput.length < 2 || searchInput.length > 255) {
+      errors.push('Tên người mua phải từ 2 đến 255 ký tự');
+      isValid = false;
+    }
+
+    // Validate email format (nếu có)
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.push('Email không hợp lệ');
+      isValid = false;
+    }
+    // Validate phone (nếu có) - format số điện thoại Việt Nam
+    if (!phone || !/^(0|84)(9[0-9]|8[1-9]|7[0|6-9]|5[2|6|8|9]|3[2-9]|2[0-9])\d{7}$/.test(phone)) {
+      errors.push('Số điện thoại không hợp lệ (phải là số điện thoại Việt Nam)');
+      isValid = false;
+    }
+    // Validate discount
+    if (discount < 0 || discount > 100 || !Number.isInteger(discount)) {
+      errors.push('Giảm giá phải là số nguyên từ 0 đến 100');
+      isValid = false;
+    }
+
+    console.log(isValid)
+    if (!isValid) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        html: errors.join('<br>'),
+        confirmButtonText: 'Đóng'
+      });
+      return false;
+    } else {
+      this.submit();
+    }
+  });
+</script>
+<!-- //script pick usser -->
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const listItems = document.querySelectorAll("#usersList li");
+  searchInput.addEventListener("input", function() {
+    const searchText = this.value.toLowerCase();
+    listItems.forEach(li => {
+      const text = li.innerText.toLowerCase();
+      if (searchText && text.includes(searchText)) {
+        li.style.display = "block";
+      } else {
+        li.style.display = "none";
+      }
+    });
+  });
+
+  function selectusers(name, phone, email, id) {
+    searchInput.value = name;
+    listItems.forEach(li => li.style.display = "none");
+    document.getElementById('email').value = email
+    document.getElementById('phone').value = phone
+    document.getElementById('userId').value = id
+  }
+</script>
+<%- include('../../footer') %>

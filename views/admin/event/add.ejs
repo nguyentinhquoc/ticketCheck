@@ -1,0 +1,136 @@
+<%- include('../../header') %>
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+               <li><a href="/">Trang chủ</a></li>
+        <li class="current">Tạo lịch diễn</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Thêm lịch diễn</h1>
+  </div><!-- End Section Title -->
+    <div class="container mt-5">
+        <form action="/event/add" method="POST" >
+          <!-- Tên sự kiện -->
+          <div class="mb-3">
+            <label for="name" class="form-label">Tên sự kiện:</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+
+          <!-- Mô tả -->
+          <div class="mb-3">
+            <label for="description" class="form-label">Mô tả:</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+          </div>
+
+          <!-- Thời gian bắt đầu -->
+          <div class="mb-3">
+            <label for="startTime" class="form-label">Thời gian bắt đầu:</label>
+            <input type="datetime-local" class="form-control" id="startTime" name="start_date" required>
+          </div>
+
+          <!-- Thời gian kết thúc -->
+          <div class="mb-3">
+            <label for="endTime" class="form-label">Thời gian kết thúc:</label>
+            <input type="datetime-local" class="form-control" id="endTime" name="end_date" required>
+          </div>
+
+          <!-- Thời gian bắt đầu bán vé -->
+          <div class="mb-3">
+            <label for="startSales" class="form-label">Thời gian bắt đầu bán vé:</label>
+            <input type="datetime-local" class="form-control" id="startSales" name="sale_date" required>
+          </div>
+
+          <!-- Giá vé -->
+          <div class="mb-3">
+            <label for="price" class="form-label">Giá vé:</label>
+            <input type="number" class="form-control" id="price" name="price" required>
+          </div>
+
+          <!-- Số lượng vé -->
+          <div class="mb-3">
+            <label for="quantity" class="form-label">Số lượng vé:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" required>
+          </div>
+
+          <!-- Nút gửi -->
+          <button type="submit" class="btn btn-primary">Tạo sự kiện</button>
+        </form>
+    </div>
+    </div>
+</section><!-- /Starter Section Section -->
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  // Get all form values
+  const name = document.getElementById('name').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const startTime = new Date(document.getElementById('startTime').value);
+  const endTime = new Date(document.getElementById('endTime').value);
+  const startSales = new Date(document.getElementById('startSales').value);
+  const price = Number(document.getElementById('price').value);
+  const quantity = Number(document.getElementById('quantity').value);
+
+  let isValid = true;
+  const errors = [];
+
+  // Validate name
+  if (name.length < 5 || name.length > 200) {
+    errors.push('Tên sự kiện phải từ 5 đến 200 ký tự');
+    isValid = false;
+  }
+
+  // Validate description
+  if (description.length < 10) {
+    errors.push('Mô tả phải có ít nhất 10 ký tự');
+    isValid = false;
+  }
+
+  // Validate dates
+  const now = new Date();
+  if (startTime <= now) {
+    errors.push('Thời gian bắt đầu phải lớn hơn thời gian hiện tại');
+    isValid = false;
+  }
+
+  if (endTime <= startTime) {
+    errors.push('Thời gian kết thúc phải sau thời gian bắt đầu');
+    isValid = false;
+  }
+
+  if (startSales >= startTime) {
+    errors.push('Thời gian bắt đầu bán vé phải trước thời gian bắt đầu sự kiện');
+    isValid = false;
+  }
+
+  // Validate price
+  if (price <= 0 || !Number.isInteger(price)) {
+    errors.push('Giá vé phải là số nguyên dương');
+    isValid = false;
+  }
+
+  // Validate quantity
+  if (quantity <= 0 || !Number.isInteger(quantity) || quantity > 10000) {
+    errors.push('Số lượng vé phải là số nguyên dương và không quá 10000');
+    isValid = false;
+  }
+
+  // Show errors or submit form
+  if (!isValid) {
+    alert(errors.join('\n'));
+  } else {
+    this.submit();
+  }
+});
+</script>
+
+
+<%- include('../../footer') %>
