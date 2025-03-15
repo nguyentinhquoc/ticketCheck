@@ -18,6 +18,26 @@ export class Event {
   end_date: Date
   @Column({ type: 'datetime' })
   sale_date: Date
+
+  @Column({ type: 'longtext' })
+  content: string
+
+  @Column()
+  main_image: string
+
+  @Column({ nullable: true })
+  sub_image1: string
+
+  @Column({ nullable: true })
+  sub_image2: string
+
+  @Column({ nullable: true })
+  sub_image3: string
+
+  @Column({ nullable: true })
+  sub_image4: string
+
+
   @OneToMany(() => Ticket, ticket => ticket.event)
   tickets: Ticket[]
 }
