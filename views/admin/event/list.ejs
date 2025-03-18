@@ -1,4 +1,4 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <% function formatDate(date) { %>
 <%= ('0' + date.getDate()).slice(-2) %>/
 <%= ('0' + (date.getMonth() + 1)).slice(-2) %>/
@@ -7,73 +7,78 @@
 <%= ('0' + date.getMinutes()).slice(-2) %>:
 <%= ('0' + date.getSeconds()).slice(-2) %>
 <% } %>
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Sự kiện</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <div class="container section-title" data-aos="fade-up">
     <h1>Danh sách sự kiện</h1>
   </div>
-  <div class="container mt-5">
-    <a href="/event/add" class="btn btn-primary">Thêm sự kiện</a>
-  </div>
-  <div class="container" data-aos="fade-up">
-    <table class="table table-bordered table-striped">
-      <thead class="table">
-        <tr>
-          <th>ID</th>
-          <th>Tên sự kiện</th>
-          <th>Mô tả</th>
-          <th>Thời gian bán</th>
-          <th>Giờ bắt đầu</th>
-          <th>Giờ kết thúc</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (envents && envents.length > 0) { %>
-        <% envents.forEach((item, index) => { %>
-        <tr>
-          <td><%= index + 1 %></td>
-          <td><%= item.name %></td>
-          <td><%= item.description %></td>
-          <td><%= formatDate(item.sale_date) %></td>
-          <td><%= formatDate(item.start_date) %></td>
-          <td><%= formatDate(item.end_date) %></td>
-          <td>
-            <a href="/event/<%= item.id %>/edit" class="btn btn-primary">Sửa</a>
-            <a href="/event/<%= item.id %>/detail" class="btn btn-danger">Xem</a>
-        </tr>
-        <% }) %>
-        <% } else { %>
-        <tr>
-          <td colspan="7" class="text-center text-danger">Không có sự kiện nào</td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
+  <div id="tableExample3" data-list='{"valueNames":["stt","name","description","sale_date","start_date","end_date"],"page":10,"pagination":true}'>
+    <div class="row justify-content-between g-0 mb-3">
+      <div class="col-auto">
+        <a href="/event/add" class="btn btn-primary btn-sm">Thêm sự kiện</a>
+      </div>
+      <div class="col-auto col-sm-5">
+        <form>
+          <div class="input-group">
+            <input class="form-control form-control-sm shadow-none search" type="search" placeholder="Tìm kiếm..." aria-label="search" />
+            <div class="input-group-text bg-transparent">
+              <span class="fa fa-search fs-10 text-600"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="table-responsive scrollbar">
+      <table class="table table-bordered table-hover table-striped fs-10 mb-0">
+        <thead class="bg-200">
+          <tr>
+            <th class="text-900 sort" data-sort="stt">STT</th>
+            <th class="text-900 sort" data-sort="name">Tên sự kiện</th>
+            <th class="text-900 sort" data-sort="description">Mô tả</th>
+            <th class="text-900 sort" data-sort="sale_date">Thời gian bán</th>
+            <th class="text-900 sort" data-sort="start_date">Giờ bắt đầu</th>
+            <th class="text-900 sort" data-sort="end_date">Giờ kết thúc</th>
+            <th class="text-center">Hành động</th>
+          </tr>
+        </thead>
+        <tbody class="list">
+          <% if (envents && envents.length > 0) { %>
+            <% envents.forEach((item, index) => { %>
+            <tr>
+              <td class="stt"><%= index + 1 %></td>
+              <td class="name"><%= item.name %></td>
+              <td class="description"><%= item.description %></td>
+              <td class="sale_date"><%= formatDate(item.sale_date) %></td>
+              <td class="start_date"><%= formatDate(item.start_date) %></td>
+              <td class="end_date"><%= formatDate(item.end_date) %></td>
+              <td class="text-center">
+                <a href="/event/<%= item.id %>/edit" class="btn btn-warning btn-sm">
+                  <i class="fas fa-edit"></i> Sửa
+                </a>
+                <a href="/event/<%= item.id %>/detail" class="btn btn-info btn-sm">
+                  <i class="fas fa-eye"></i> Xem
+                </a>
+              </td>
+            </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center text-danger">Không có sự kiện nào</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Trang trước" data-list-pagination="prev">
+        <span class="fas fa-chevron-left"></span>
+      </button>
+      <ul class="pagination mb-0"></ul>
+      <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Trang sau" data-list-pagination="next">
+        <span class="fas fa-chevron-right"></span>
+      </button>
+    </div>
   </div>
 </section>
-<script>
-  document.querySelectorAll('.toggle-status').forEach(item => {
-    item.addEventListener('change', async function() {
-      const id = this.getAttribute('data-id');
-      const newStatus = this.checked;
-      // Gửi yêu cầu cập nhật trạng thái
-      await fetch(`/language/changeStatus/${id}`, {
-        method: 'GET'
-      });
-      console.log(`Cập nhật ID ${id} thành trạng thái: ${newStatus}`);
-    });
-  });
-</script>
 
-<%- include('../../footer') %>
+
+<%- include('../layout/footer') %>

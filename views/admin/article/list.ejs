@@ -1,61 +1,79 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 
 <!-- Page Title -->
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Điểm chạm</li>
-      </ol>
+<section id="starter-section" class="card p-4"><div id="articleTable"
+    data-list='{"valueNames":["stt","title","language","area","actions","status"],"page":10,"pagination":true}'>
+    <div class="container section-title" data-aos="fade-up">
+      <h1>Danh sách bài viết điểm chạm</h1>
     </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
-  <div class="container section-title" data-aos="fade-up">
-    <h1>Danh sách điểm chạm</h1>
-  </div>
-  <div class="container" data-aos="fade-up">
-    <a href="/articles/add" class="btn btn-primary mb-3">Thêm mới</a>
-    <table class="table table-bordered table-striped">
-      <thead class="table">
-        <tr>
-          <th>ID</th>
-          <th>Tiêu đề</th>
-          <th>Ngôn ngữ</th>
-          <th>Vị trí</th>
-          <th>Hành động</th>
-          <th>Trạng thái</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% articles.forEach((article, key) => { %>
-        <tr>
-          <td><%=key+1%></td>
-          <td><%=article.title%></td>
-          <td><img style="border-radius: 5px;" src="https://flagcdn.com/w40/<%=article.language.code.toLowerCase()%>
-.png" alt=""><%=article.language.code%></td>
-          <td><%= article.area?.name || article.areaSmall?.name || '' %> </td>
-          <td>
-            <div class="form-check form-switch">
-              <a href="/articles/<%=article.id%>"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M3 21h18" stroke="#f53e19" stroke-width="4" stroke-linecap="round"  />
-  <path d="M16.5 3a2.1 2.1 0 013 0l1.5 1.5a2.1 2.1 0 010 3L8 20H3v-5l13.5-12z" stroke="#f53e19" stroke-width="4" stroke-linejoin="round"/>
-</svg>
-Sửa
-</a>
+    <div class="container" data-aos="fade-up">
+      <div class="row justify-content-between g-0 mb-3">
+        <div class="col-auto">
+          <a href="/articles/add" class="btn btn-primary btn-sm">Thêm mới</a>
+        </div>
+        <div class="col-auto col-sm-5">
+          <form>
+            <div class="input-group">
+              <input class="form-control form-control-sm shadow-none search" type="search"
+                placeholder="Tìm kiếm..." aria-label="search" />
+              <div class="input-group-text bg-transparent">
+                <span class="fa fa-search fs-10 text-600"></span>
+              </div>
             </div>
-          </td>
-          <td>
-              <input class="form-check-input toggle-status" type="checkbox" data-id="<%= article.id %>" <%= article.status ? 'checked' : '' %>>
-          </td>
-        </tr>
-        <%})%>
-      </tbody>
-    </table>
-  </div>
-</section>
+          </form>
+        </div>
+      </div>
+      <div class="table-responsive scrollbar">
+        <table class="table table-bordered table-hover table-striped fs-10 mb-0">
+          <thead class="bg-200">
+            <tr>
+              <th class="text-900 sort" data-sort="stt">STT</th>
+              <th class="text-900 sort" data-sort="title">Tiêu đề</th>
+              <th class="text-900 sort" data-sort="language">Ngôn ngữ</th>
+              <th class="text-900 sort" data-sort="area">Vị trí</th>
+              <th class="text-center">Hành động</th>
+              <th class="text-center">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody class="list">
+            <% articles.forEach((article, key) => { %>
+            <tr>
+              <td class="stt"><%=key+1%></td>
+              <td class="title"><%=article.title%></td>
+              <td class="language"><img style="border-radius: 5px;"
+                  src="https://flagcdn.com/w40/<%=article.language.code.toLowerCase()%>.png"
+                  alt><%=article.language.code%></td>
+              <td class="area"><%= article.area?.name || article.areaSmall?.name || ''
+                %></td>
+              <td class="actions text-center">
+                <a href="/articles/<%=article.id%>" class="btn btn-warning btn-sm">
+                  <i class="fas fa-edit"></i> Sửa
+                </a>
+              </td>
+              <td class="status text-center">
+                <div class="form-check form-switch d-flex justify-content-center">
+                  <input class="form-check-input toggle-status" type="checkbox"
+                    data-id="<%= article.id %>" <%=article.status ? 'checked' : '' %>>
+                </div>
+              </td>
+            </tr>
+            <%})%>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button class="btn btn-sm btn-falcon-default me-1" type="button"
+          title="Trang trước" data-list-pagination="prev">
+          <span class="fas fa-chevron-left"></span>
+        </button>
+        <ul class="pagination mb-0"></ul>
+        <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Trang sau"
+          data-list-pagination="next">
+          <span class="fas fa-chevron-right"></span>
+        </button>
+      </div>
+    </div>
+  </div></section>
 <script>
   document.querySelectorAll('.toggle-status').forEach(item => {
     item.addEventListener('change', async function() {
@@ -69,4 +87,4 @@ Sửa
     });
   });
 </script>
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

@@ -1,43 +1,59 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Hạng vé</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <div class="container section-title" data-aos="fade-up">
     <h1>Danh sách hạng vé</h1>
   </div>
-  <div class="container" data-aos="fade-up">
-    <a href="/class-ticket/create" class="btn btn-primary mb-3">Thêm hạng vé</a>
-    <table class="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th>STT</th>
-          <th>Tên</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% classTickets.forEach(function(classTicket, index) { %>
-        <tr>
-          <td><%= index+=1 %></td>
-          <td><%= classTicket.name %></td>
-          <td>
-            <a href="/class-ticket/edit/<%= classTicket.id %>"
-               class="btn btn-warning btn-sm">Sửa</a>
-          </td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
+
+  <div id="tableExample3" data-list='{"valueNames":["stt","name"],"page":10,"pagination":true}'>
+    <div class="row justify-content-between g-0 mb-3">
+      <div class="col-auto">
+        <a href="/class-ticket/create" class="btn btn-primary btn-sm">Thêm hạng vé</a>
+      </div>
+      <div class="col-auto col-sm-5">
+        <form>
+          <div class="input-group">
+            <input class="form-control form-control-sm shadow-none search" type="search" placeholder="Tìm kiếm..." aria-label="search" />
+            <div class="input-group-text bg-transparent">
+              <span class="fa fa-search fs-10 text-600"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="table-responsive scrollbar">
+      <table class="table table-bordered table-hover table-striped fs-10 mb-0">
+        <thead class="bg-200">
+          <tr>
+            <th class="text-900 sort" data-sort="stt">STT</th>
+            <th class="text-900 sort" data-sort="name">Tên</th>
+            <th class="text-center">Hành động</th>
+          </tr>
+        </thead>
+        <tbody class="list">
+          <% classTickets.forEach(function(classTicket, index) { %>
+          <tr>
+            <td class="stt"><%= index+1 %></td>
+            <td class="name"><%= classTicket.name %></td>
+            <td class="text-center">
+              <a href="/class-ticket/edit/<%= classTicket.id %>" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Trang trước" data-list-pagination="prev">
+        <span class="fas fa-chevron-left"></span>
+      </button>
+      <ul class="pagination mb-0"></ul>
+      <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Trang sau" data-list-pagination="next">
+        <span class="fas fa-chevron-right"></span>
+      </button>
+    </div>
   </div>
 </section>
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

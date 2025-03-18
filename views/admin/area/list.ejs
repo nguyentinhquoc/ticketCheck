@@ -1,29 +1,16 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <style>
-  form {
+  .formAdd {
     border: 1px solid #ccc;
     padding: 20px;
     border-radius: 20px;
   }
 </style>
 <!-- Page Title -->
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Vị trí</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
-
-  <div class="d-flex gap-3 align-items-center mb-5" style="width: 50vw; margin: 0 auto;">
-
+<section class="card p-4">
+  <div class="d-flex align-items-center mb-5 w-100" >
     <!-- Form 1 -->
-    <form action="/area" method="post" id="form1" class="w-100 formContainer" enctype="multipart/form-data">
+    <form action="/area" method="post" id="form1" class="w-100 formContainer formAdd" enctype="multipart/form-data">
       <h4>Thêm vị trí chính</h4>
       <div class="form-group">
         <label for>Tên vị trí</label>
@@ -42,7 +29,7 @@
         <input type="submit" class="btn btn-primary w-100 mt-3" value="Thêm mới">
       </div>
     </form>
-    <form action="/area-small" method="post" id="form1" class="w-100 formContainer" enctype="multipart/form-data">
+    <form action="/area-small" method="post" id="form1" class="w-100 formContainer formAdd" enctype="multipart/form-data">
       <h4>Thêm vị trí phụ thuộc</h4>
       <div class="form-group">
         <label for>Tên vị trí</label>
@@ -66,42 +53,73 @@
       </div>
     </form>
   </div>
-  <div style="width: 50vw; margin: 0 auto;">
-    <button class="btn btn-primary m-3" id="addForm">Thêm mới</button>
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-      <thead class="table-dark">
-        <tr>
-        <th scope="col">STT</th>
-        <th scope="col">Tên</th>
-        <th scope="col">Ảnh</th>
-        <th scope="col">Mô tả</th>
-        <th scope="col">Xem</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% areas.forEach(area => { %>
-        <tr class="table-primary">
-        <td><strong><%= area.code %></strong></td>
-        <td><strong><%= area.name %></strong></td>
-        <td><img src="/uploads/area/<%= area.image %>" alt="" class="img-thumbnail" style="width: 100px;"></td>
-        <td><%= area.description %></td>
-        <td><a href="/articles/l/<%= area.id %>" class="btn btn-sm btn-info">Xem</a></td>
-        </tr>
-        <%
-          let stt = 0
-          area.areaSmalls.forEach(areaSmall => { %>
-        <tr>
-        <td><%=area.code %>.<%= stt+=1 %></td>
-        <td><%= areaSmall.name %></td>
-        <td><img src="/uploads/area/<%= areaSmall.image %>" alt="" class="img-thumbnail" style="width: 100px;"></td>
-        <td><%= areaSmall.description %></td>
-        <td><a href="/articles/m/<%= areaSmall.id %>" class="btn btn-sm btn-info">Xem</a></td>
-        </tr>
-        <% }) %>
-        <% }) %>
-      </tbody>
+  <div id="tableExample3" data-list='{"valueNames":["stt","name","image","description"],"page":10,"pagination":true}' >
+    <div class="row justify-content-between g-0 mb-3">
+      <div class="col-auto">
+        <button class="btn btn-primary btn-sm" id="addForm">Thêm mới</button>
+      </div>
+      <div class="col-auto col-sm-5">
+        <form>
+          <div class="input-group">
+            <input class="form-control form-control-sm shadow-none search" type="search" placeholder="Tìm kiếm..." aria-label="search" />
+            <div class="input-group-text bg-transparent">
+              <span class="fa fa-search fs-10 text-600"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="table-responsive scrollbar">
+      <table class="table table-bordered table-hover table-striped fs-10 mb-0">
+        <thead class="bg-200">
+          <tr>
+            <th class="text-900 sort" data-sort="stt">STT</th>
+            <th class="text-900 sort" data-sort="name">Tên</th>
+            <th class="text-900 sort" data-sort="image">Ảnh</th>
+            <th class="text-900 sort" data-sort="description">Mô tả</th>
+            <th class="text-center">Hành động</th>
+          </tr>
+        </thead>
+        <tbody class="list">
+          <% areas.forEach(area => { %>
+          <tr class="table-primary">
+            <td class="stt"><strong><%= area.code %></strong></td>
+            <td class="name"><strong><%= area.name %></strong></td>
+            <td class="image"><img src="/uploads/area/<%= area.image %>" alt="" class="img-thumbnail" style="width: 100px;"></td>
+            <td class="description"><%= area.description %></td>
+            <td class="text-center">
+               <a href="/articles/l/<%= area.id %>" class="btn btn-sm btn-info">
+                <i class="fas fa-eye"></i> Xem
+              </a>
+            </td>
+          </tr>
+          <%
+            let stt = 0
+            area.areaSmalls.forEach(areaSmall => { %>
+          <tr>
+            <td class="stt"><%=area.code %>.<%= stt+=1 %></td>
+            <td class="name"><%= areaSmall.name %></td>
+            <td class="image"><img src="/uploads/area/<%= areaSmall.image %>" alt="" class="img-thumbnail" style="width: 100px;"></td>
+            <td class="description"><%= areaSmall.description %></td>
+            <td class="text-center">
+              <a href="/articles/m/<%= areaSmall.id %>" class="btn btn-sm btn-info">
+                <i class="fas fa-eye"></i> Xem
+              </a>
+            </td>
+          </tr>
+          <% }) %>
+          <% }) %>
+        </tbody>
       </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Trang trước" data-list-pagination="prev">
+        <span class="fas fa-chevron-left"></span>
+      </button>
+      <ul class="pagination mb-0"></ul>
+      <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Trang sau" data-list-pagination="next">
+        <span class="fas fa-chevron-right"></span>
+      </button>
     </div>
   </div>
   <!-- Nhúng jQuery -->
@@ -126,4 +144,4 @@
   </script>
 
 </section><!-- /Starter Section Section -->
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

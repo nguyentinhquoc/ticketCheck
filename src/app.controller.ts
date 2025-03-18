@@ -1,5 +1,5 @@
 import { Gallery } from './gallery/entities/gallery.entity';
-import { Controller, Get, Render, Query, Req } from '@nestjs/common'
+import { Controller, Get, Render, Query, Req, Res, Redirect } from '@nestjs/common'
 import { AppService } from './app.service'
 import * as QRCode from 'qrcode'
 import { Public } from './decorators/public.decorator';
@@ -34,7 +34,7 @@ export class AppController {
   }
 
   @Get('admin')
-  @Render('index')
+  @Render('admin/index')
  async adminG (@Req() req: Request) {
     const myPlaintextPassword = 'admin@1234!';
     bcrypt.hash(myPlaintextPassword, saltRounds, function (err, hash) {
@@ -57,4 +57,13 @@ export class AppController {
     }
     return {}
   }
+
+  @Get('logout')
+  @Public()
+  @Redirect('/admin/login')
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token');
+    return { success: true, message: 'Logged out successfully' };
+  }
+
 }

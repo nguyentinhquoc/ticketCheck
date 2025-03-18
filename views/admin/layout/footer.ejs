@@ -1,4 +1,8 @@
 <script>
+  document.querySelectorAll('input').forEach(input => {
+  input.setAttribute('autocomplete', 'off');
+});
+
   var navbarPosition = localStorage.getItem('navbarPosition');
   var navbarVertical = document.querySelector('.navbar-vertical');
   var navbarTopVertical = document.querySelector('.content .navbar-top');

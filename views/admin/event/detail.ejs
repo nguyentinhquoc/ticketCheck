@@ -1,5 +1,5 @@
 
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <% function formatDate(dateString) {
     const monthNames = [
         "January", "February", "March", "April", "May", "June",
@@ -55,18 +55,7 @@
 
 
 <!-- Page Title -->
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Ảnh bìa</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <div class="container section-title" data-aos="fade-up">
     <h1>Chi tiết sự kiện</h1>
   </div>
@@ -139,4 +128,4 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"></script>
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

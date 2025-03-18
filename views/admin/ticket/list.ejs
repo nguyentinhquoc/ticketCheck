@@ -1,4 +1,4 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <% function formatDate(date) { %>
 <%= ('0' + date.getDate()).slice(-2) %>/
 <%= ('0' + (date.getMonth() + 1)).slice(-2) %>/
@@ -7,60 +7,79 @@
 <%= ('0' + date.getMinutes()).slice(-2) %>:
 <%= ('0' + date.getSeconds()).slice(-2) %>
 <% } %>
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Vé đã bán</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <div class="container section-title" data-aos="fade-up">
     <h1>Danh sách vé đã bán</h1>
   </div>
-  <div class="container" data-aos="fade-up">
-    <a href="/ticket/add" class="btn btn-primary">Thêm vé</a>
-    <table class="table table-bordered table-striped">
-      <thead class="table">
-        <tr>
-          <th>ID</th>
-          <th>Người mua</th>
-          <th>Người bán</th>
-          <th>Ghế</th>
-          <th>Ngày bán</th>
-          <th>Sự kiện</th>
-          <th>Giảm giá</th>
-          <th>Giá bán</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (tickets && tickets.length > 0) { %>
-        <% tickets.forEach((item, index) => { %>
-        <tr>
-          <td><%= index + 1 %></td>
-          <td><%= item.user.name %></td>
-          <td><%= item.account.user_name %></td>
-          <td><%= item.seat %></td>
-          <td><%= formatDate(item.CreatedAt) %></td>
-          <td><%= item.event.name %></td>
-          <td><%= item.discount %>%</td>
-          <td><%= (item.typeClassTicket.price * (1 - item.discount/100)).toLocaleString('vi-VN', {
-            style: 'currency', currency: 'VND' }) %>
+  <div id="tableExample3" data-list='{"valueNames":["id","user","account","seat","date","event","discount","price"],"page":10,"pagination":true}'>
+    <div class="row justify-content-between g-0 mb-3">
+      <div class="col-auto">
+        <a href="/ticket/add" class="btn btn-primary btn-sm">Thêm vé</a>
+      </div>
+      <div class="col-auto col-sm-5">
+        <form>
+          <div class="input-group">
+            <input class="form-control form-control-sm shadow-none search" type="search" placeholder="Tìm kiếm..." aria-label="search" />
+            <div class="input-group-text bg-transparent">
+              <span class="fa fa-search fs-10 text-600"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="table-responsive scrollbar">
+      <table class="table table-bordered table-hover table-striped fs-10 mb-0">
+        <thead class="bg-200">
+          <tr>
+            <th class="text-900 sort" data-sort="id">ID</th>
+            <th class="text-900 sort" data-sort="user">Người mua</th>
+            <th class="text-900 sort" data-sort="account">Người bán</th>
+            <th class="text-900 sort" data-sort="seat">Ghế</th>
+            <th class="text-900 sort" data-sort="date">Ngày bán</th>
+            <th class="text-900 sort" data-sort="event">Sự kiện</th>
+            <th class="text-900 sort" data-sort="discount">Giảm giá</th>
+            <th class="text-900 sort" data-sort="price">Giá bán</th>
+            <th class="text-center">Hành động</th>
+          </tr>
+        </thead>
+        <tbody class="list">
+          <% if (tickets && tickets.length > 0) { %>
+          <% tickets.forEach((item, index) => { %>
+          <tr>
+            <td class="id"><%= index + 1 %></td>
+            <td class="user"><%= item.user.name %></td>
+            <td class="account"><%= item.account.user_name %></td>
+            <td class="seat"><%= item.seat %></td>
+            <td class="date"><%= formatDate(item.CreatedAt) %></td>
+            <td class="event"><%= item.event.name %></td>
+            <td class="discount"><%= item.discount %>%</td>
+            <td class="price"><%= (item.typeClassTicket.price * (1 - item.discount/100)).toLocaleString('vi-VN', {
+              style: 'currency', currency: 'VND' }) %></td>
+            <td class="text-center">
+              <a href="/admin/ticket/edit/<%= item.id %>" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit"></i> Sửa
+              </a>
+            </td>
           </tr>
           <% }) %>
           <% } else { %>
           <tr>
-            <td colspan="4" class="text-center text-danger">Không có vé nào được bán
-              ra</td>
+            <td colspan="9" class="text-center text-danger">Không có vé nào được bán ra</td>
           </tr>
           <% } %>
         </tbody>
       </table>
     </div>
+    <div class="d-flex justify-content-center mt-3">
+      <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Trang trước" data-list-pagination="prev">
+        <span class="fas fa-chevron-left"></span>
+      </button>
+      <ul class="pagination mb-0"></ul>
+      <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Trang sau" data-list-pagination="next">
+        <span class="fas fa-chevron-right"></span>
+      </button>
+    </div>
+  </div>
   </section>
 
-  <%- include('../../footer') %>
+  <%- include('../layout/footer') %>

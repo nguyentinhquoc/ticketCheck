@@ -1,4 +1,4 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <% function formatDate(date) { %>
 <%= ('0' + date.getDate()).slice(-2) %>/
 <%= ('0' + (date.getMonth() + 1)).slice(-2) %>/
@@ -7,59 +7,77 @@
 <%= ('0' + date.getMinutes()).slice(-2) %>:
 <%= ('0' + date.getSeconds()).slice(-2) %>
 <% } %>
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Thư viện</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <div class="container section-title" data-aos="fade-up">
     <h1>Danh sách thư viện</h1>
   </div>
-  <div class="container mt-5">
-    <a href="/gallery/add" class="btn btn-primary">Thêm thư viện</a>
-  </div>
-  <div class="container" data-aos="fade-up">
-    <table class="table table-bordered table-striped">
-      <thead class="table">
-        <tr>
-          <th>ID</th>
-          <th>Ảnh</th>
-          <th>Tiêu đề</th>
-          <th>Mô tả</th>
-          <th>Ngày tạo</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (gallerys && gallerys.length > 0) { %>
-        <% gallerys.forEach((item, index) => { %>
-        <tr>
-          <td><%= index + 1 %></td>
-          <td> <img src="\uploads\gallery\<%= item.imagePath %>" alt="" width="100px"></td>
-          <td><%= item.title %></td>
-          <td><%= item.description %></td>
-          <td><%= item.createdAt ? formatDate(new Date(item.createdAt)) : 'N/A' %></td>
-          <td>
-            <a href="/gallery/<%= item.id %>/edit" class="btn btn-primary">Sửa</a>
-            <a href="/gallery/<%= item.id %>/delete" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
-          </td>
-        </tr>
-        <% }) %>
-        <% } else { %>
-        <tr>
-          <td colspan="5" class="text-center text-danger">Không có thư viện nào</td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
+  <div id="galleryTable" data-list='{"valueNames":["stt","image","title","description","date","actions"],"page":10,"pagination":true}'>
+    <div class="container" data-aos="fade-up">
+      <div class="row justify-content-between g-0 mb-3">
+        <div class="col-auto">
+          <a href="/gallery/add" class="btn btn-primary btn-sm">Thêm thư viện</a>
+        </div>
+        <div class="col-auto col-sm-5">
+          <form>
+            <div class="input-group">
+              <input class="form-control form-control-sm shadow-none search" type="search" placeholder="Tìm kiếm..." aria-label="search" />
+              <div class="input-group-text bg-transparent">
+                <span class="fa fa-search fs-10 text-600"></span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="table-responsive scrollbar">
+        <table class="table table-bordered table-hover table-striped fs-10 mb-0">
+          <thead class="bg-200">
+            <tr>
+              <th class="text-900 sort" data-sort="stt">ID</th>
+              <th class="text-900 sort" data-sort="image">Ảnh</th>
+              <th class="text-900 sort" data-sort="title">Tiêu đề</th>
+              <th class="text-900 sort" data-sort="description">Mô tả</th>
+              <th class="text-900 sort" data-sort="date">Ngày tạo</th>
+              <th class="text-center">Hành động</th>
+            </tr>
+          </thead>
+          <tbody class="list">
+            <% if (gallerys && gallerys.length > 0) { %>
+            <% gallerys.forEach((item, index) => { %>
+            <tr>
+              <td class="stt"><%= index + 1 %></td>
+              <td class="image"><img src="\uploads\gallery\<%= item.imagePath %>" alt="" width="60px" style="border-radius: 5px;"></td>
+              <td class="title"><%= item.title %></td>
+              <td class="description"><%= item.description %></td>
+              <td class="date"><%= item.createdAt ? formatDate(new Date(item.createdAt)) : 'N/A' %></td>
+              <td class="actions text-center">
+                <a href="/gallery/<%= item.id %>/edit" class="btn btn-warning btn-sm">
+                  <i class="fas fa-edit"></i> Sửa
+                </a>
+                <a href="/gallery/<%= item.id %>/delete" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                  <i class="fas fa-trash"></i> Xóa
+                </a>
+              </td>
+            </tr>
+            <% }) %>
+            <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center text-danger">Không có thư viện nào</td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-center mt-3">
+        <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Trang trước" data-list-pagination="prev">
+          <span class="fas fa-chevron-left"></span>
+        </button>
+        <ul class="pagination mb-0"></ul>
+        <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Trang sau" data-list-pagination="next">
+          <span class="fas fa-chevron-right"></span>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

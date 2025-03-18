@@ -1,4 +1,4 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sơ Đồ Chỗ Ngồi</title>
@@ -46,20 +46,10 @@
   }
 </style>
 
+
 <!-- Page Title -->
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Tạo lịch diễn</li>
-      </ol>
-    </div>
-  </nav>
-</div><!-- End Page Title -->
 <!-- Starter Section Section -->
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
     <h1>Tạo vé</h1>
@@ -399,4 +389,4 @@
     document.getElementById('userId').value = id
   }
 </script>
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

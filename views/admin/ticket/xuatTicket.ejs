@@ -1,4 +1,4 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <% function formatDate(date) { %>
 <%= ('0' + date.getDate()).slice(-2) %>/<%= ('0' + (date.getMonth() + 1)).slice(-2) %>/<%= date.getFullYear() %>
 <% } %>
@@ -91,17 +91,6 @@
 
 </style>
 
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Vé đã bán</li>
-      </ol>
-    </div>
-  </nav>
-</div>
 
 <div class="container section-title" data-aos="fade-up">
   <h1>Danh sách vé</h1>
@@ -128,4 +117,4 @@
     </div>
   <% })} %>
 </div>
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>

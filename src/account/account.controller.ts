@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Render, Req, Res, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Req, Res, Query, Redirect } from '@nestjs/common';
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 import { AccountService } from './account.service'
@@ -17,9 +17,12 @@ export class AccountController {
 
   @Public()
   @Post('login')
+  @Redirect('admin')
   @Render('admin/login')
   async loginP (@Body() body, @Res() res: Response) {
+
     const account = await this.accountService.findWUserName(body.user_name)
+    console.log(account)
     // Kiểm tra tài khoản có tồn tại không
     if (!account) {
       return res.redirect(`/admin/login?error=user`)
@@ -43,13 +46,15 @@ export class AccountController {
       sameSite: 'strict', // Chống CSRF
       maxAge: 3 * 60 * 60 * 1000 // Hết hạn sau 3 giờ
     })
+    console.log(account.role)
     if (account.role === 'admin') {
-      return res.redirect(`/`)
+      return res.redirect(`/admin`)
     }else if (account.role === 'soatVe') {
       return res.redirect(`/ticket/check`)
     }else if (account.role === 'banVe') {
       return res.redirect(`/ticket/add`)
     }
-    return res.redirect(`/`)
+
+    return {}
   }
 }

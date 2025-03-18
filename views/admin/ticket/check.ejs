@@ -1,4 +1,4 @@
-<%- include('../../header') %>
+<%- include('../layout/header') %>
 <% function formatDate(date) { %>
 <%= ('0' + date.getDate()).slice(-2) %>/
 <%= ('0' + (date.getMonth() + 1)).slice(-2) %>/
@@ -7,18 +7,7 @@
 <%= ('0' + date.getMinutes()).slice(-2) %>:
 <%= ('0' + date.getSeconds()).slice(-2) %>
 <% } %>
-<div class="page-title">
-  <div class="heading"></div>
-  <nav class="breadcrumbs">
-    <div class="container">
-      <ol>
-        <li><a href="/">Trang chủ</a></li>
-        <li class="current">Vé đã bán</li>
-      </ol>
-    </div>
-  </nav>
-</div>
-<section id="starter-section" class="starter-section section">
+<section id="starter-section" class="card p-4">
   <div class="container section-title" data-aos="fade-up">
     <h1>Soát vé</h1>
   </div>
@@ -76,4 +65,4 @@
     </script>
 </section>
 
-<%- include('../../footer') %>
+<%- include('../layout/footer') %>
