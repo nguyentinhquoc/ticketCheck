@@ -25,6 +25,14 @@ import { Event } from './event/entities/event.entity'
 import { User } from './user/entities/user.entity'
 import { UserModule } from './user/user.module'
 import { JwtService } from '@nestjs/jwt'
+import { TypeTicketModule } from './type_ticket/type_ticket.module';
+import { ClassTicketModule } from './class_ticket/class_ticket.module';
+import { TypeClassTicketModule } from './type_class_ticket/type_class_ticket.module';
+import { TypeTicket } from './type_ticket/entities/type_ticket.entity'
+import { TypeClassTicket } from './type_class_ticket/entities/type_class_ticket.entity'
+import { ClassTicket } from './class_ticket/entities/class_ticket.entity'
+import { GalleryModule } from './gallery/gallery.module';
+import { Gallery } from './gallery/entities/gallery.entity'
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -43,7 +51,11 @@ import { JwtService } from '@nestjs/jwt'
         Banner,
         Ticket,
         Event,
-        User
+        User,
+        TypeTicket,
+        TypeClassTicket,
+        ClassTicket,
+        Gallery
       ],
       synchronize: true
     }),
@@ -56,6 +68,10 @@ import { JwtService } from '@nestjs/jwt'
     TicketModule,
     EventModule,
     UserModule,
+    TypeTicketModule,
+    ClassTicketModule,
+    TypeClassTicketModule,
+    GalleryModule,
   ],
   controllers: [AppController, ArticleController],
   providers: [

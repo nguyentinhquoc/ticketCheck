@@ -23,7 +23,8 @@
     <h1>Danh sách vé đã bán</h1>
   </div>
   <div class="container" data-aos="fade-up">
-    <table class="table">
+    <a href="/ticket/add" class="btn btn-primary">Thêm vé</a>
+    <table class="table table-bordered table-striped">
       <thead class="table">
         <tr>
           <th>ID</th>
@@ -33,7 +34,7 @@
           <th>Ngày bán</th>
           <th>Sự kiện</th>
           <th>Giảm giá</th>
-          <th>Giảm bán</th>
+          <th>Giá bán</th>
         </tr>
       </thead>
       <tbody>
@@ -47,7 +48,7 @@
           <td><%= formatDate(item.CreatedAt) %></td>
           <td><%= item.event.name %></td>
           <td><%= item.discount %>%</td>
-          <td><%= (item.event.price * (1 - item.discount/100)).toLocaleString('vi-VN', {
+          <td><%= (item.typeClassTicket.price * (1 - item.discount/100)).toLocaleString('vi-VN', {
             style: 'currency', currency: 'VND' }) %>
           </tr>
           <% }) %>

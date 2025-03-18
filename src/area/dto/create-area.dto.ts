@@ -5,4 +5,5 @@ export class CreateAreaDto {
   name: string;
   @IsString()
   code: string;
+  image: string;
 }

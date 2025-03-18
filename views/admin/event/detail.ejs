@@ -1,0 +1,142 @@
+
+<%- include('../../header') %>
+<% function formatDate(dateString) {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+} %>
+
+
+<style>
+    * {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      margin: 0px;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .event-header img {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      height: 420px;
+    }
+
+    .event-images img {
+      width: 100%;
+      max-width: 100%;
+      height: 206px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    h1 {
+     margin: 0px !important;
+    }
+  </style>
+
+
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="/">Trang chủ</a></li>
+        <li class="current">Ảnh bìa</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Chi tiết sự kiện</h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <h1 style="font-weight: bold;">Xem thử trang hiển thị</h1>
+      <div class="container mt-4" style="overflow-y: auto; max-height: 1000px; padding: 30px; box-shadow: 5px 10px 8px 10px #e9e8e8; border-radius: 20px; ">
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <div class="event-header">
+            <img
+              src="https://images.pexels.com/photos/19979603/pexels-photo-19979603/free-photo-of-d-ng-phong-c-nh-thien-nhien-d-ng-cong.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+              alt="Kiều - Tinh hoa nghệ thuật Việt">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row g-2 event-images">
+            <div class="col-6"><img
+                src="https://images.pexels.com/photos/19979603/pexels-photo-19979603/free-photo-of-d-ng-phong-c-nh-thien-nhien-d-ng-cong.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                alt="Ảnh 1"></div>
+            <div class="col-6"><img
+                src="https://d1hjkbq40fs2x4.cloudfront.net/2017-08-21/files/landscape-photography_1645.jpg"
+                alt="Ảnh 2"></div>
+            <div class="col-6"><img
+                src="https://d1hjkbq40fs2x4.cloudfront.net/2017-08-21/files/landscape-photography_1645.jpg"
+                alt="Ảnh 3"></div>
+            <div class="col-6"><img
+                src="https://d1hjkbq40fs2x4.cloudfront.net/2017-08-21/files/landscape-photography_1645.jpg"
+                alt="Ảnh 4"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-8 p-5" >
+          <h1 class="fw-bolder">"<%= event.name %>"</h1>
+          <div class="row" style="border-bottom: 1px solid #ccc; padding: 24px 0px;">
+            <div class="col-md-12">
+              <div class="row lableTop">
+                <p class="col-md-4"><strong><img src="/assets/mapdetail.svg" alt=""></strong><span class="lableTop"> 72 Hàng Bạc, Hà Nội </span></p>
+                <p class="col-md-4"><strong><img src="/assets/calenderDetail.svg" alt=""></strong> <span class="lableTop"> <%= formatDate(event.start_date) %> </span></p>
+                <p class="col-md-4"><strong><img src="/assets/starDetail.svg" alt=""></strong> <span class="lableTop"> Nhà hát cài lương Hà Nội </span></p>
+
+              </div>
+            </div>
+          </div>
+          <div class="row" style="border-bottom: 1px solid #ccc; padding: 24px 0px;">
+            <div class="col-md-12">
+              <div class="d-flex">
+                <img width="48px" height="48px"
+                  src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_640.png"
+                  alt>
+                <div style="margin-left: 5px;">
+                  <p> <strong style="font-size: larger;">Pros Entertainment</strong> <br> <span style="color: #ccc; font-size: small;">Organizer</span>  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+               <div class="mt-4"><%- event.content %></div>
+        </div>
+        <div class="col-md-4" style=" height: fit-content; box-shadow: 5px 10px 8px 10px #e9e8e8; padding: 20px; border-radius: 20px;">
+          <p><span style="font-size: 18px; font-weight: bold;">560,000 VND</span></p>
+          <p><strong> <u> Hạng VIP </u> ></strong></p>
+          <button class="btn" style=" height: 50px;font-weight: bold; background-color: #FE5000; color: white; width: 100%;">Book Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- /Starter Section Section -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+<%- include('../../footer') %>

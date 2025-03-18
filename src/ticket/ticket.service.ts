@@ -20,7 +20,8 @@ export class TicketService {
     quantity: number,
     eventId: number,
     accountId: number,
-    userId: number
+    userId: number,
+    typeClassTicket:number
   ) {
     return this.ticketRepository.save({
       seat,
@@ -29,12 +30,13 @@ export class TicketService {
       quantity,
       event: { id: eventId },
       account: { id: accountId },
-      user: { id: userId }
+      user: { id: userId },
+      typeClassTicket: { id: typeClassTicket }
     })
   }
 
   findList() {
-    return this.ticketRepository.find({relations: ['event', 'account', 'user']})
+    return this.ticketRepository.find({ relations: ['event', 'account', 'user','typeClassTicket']})
   }
 
   findByCode (code: string) {

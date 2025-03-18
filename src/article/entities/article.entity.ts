@@ -39,4 +39,7 @@ export class Article {
     nullable: true
   })
   areaSmall: AreaSmall
+
+  @Column({ nullable: true })
+  description: string
 }

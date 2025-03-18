@@ -13,6 +13,10 @@ export class Area {
 
   @Column()
   code: string;
+  @Column()
+  image: string;
+
+
 
   @OneToMany(() => Article, (article) => article.area)
   articles: Article[];
@@ -22,4 +26,7 @@ export class Area {
 
   @ManyToOne(() => Language, (language) => language.areas, { onDelete: 'CASCADE' })
   language: Language;
+
+  @Column({ nullable: true })
+  description: string
 }

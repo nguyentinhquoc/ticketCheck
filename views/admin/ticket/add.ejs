@@ -1,5 +1,4 @@
 <%- include('../../header') %>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sơ Đồ Chỗ Ngồi</title>
@@ -67,11 +66,9 @@
   </div><!-- End Section Title -->
   <div class="container mt-5">
     <form action="/ticket/add" method="POST">
-
       <!-- Tên người mua -->
       <div class="mb-3">
         <div class="row mb-3">
-
           <label for="searchInput" class="form-label">Tên người mua:</label>
           <input type="hidden" name="userId" id="userId">
           <input type="text" class="form-control" id="searchInput" name="name" required>
@@ -95,15 +92,19 @@
           </div>
         </div>
         <!-- Chọn sự kiện -->
+
+        <!-- Chọn loại vé và hãng vé -->
+
         <div class="row mb-3">
           <label for="event" class="form-label">Sự kiện:</label>
           <select onchange="filterSeatMap()" class="form-control" id="event" name="eventId" required>
             <option value></option>
             <% events.forEach(function(event) { %>
-            <option value="<%= event.id %>" data-price="<%= event.price %>"><%= event.name
+            <option value="<%= event.id %>" data-id="<%= event.id %>"><%= event.name
               %></option>
             <% }); %>
           </select>
+          <div id="soLuong"></div>
         </div>
         <div class="seat-map" style="display: none;">
           <div class="stage">SÂN KHẤU</div>
@@ -153,9 +154,58 @@
   </div>
   </div>
   <script>
+    const events = <%- JSON.stringify(events) %>;
+    // No need to parse events as it's already a JavaScript object
     seatMap = document.getElementById('seat-map');
     async function filterSeatMap() {
+      // Use events directly, it's already a JavaScript object
+      const eventData = events;
+      // Get selected event
       const eventSelect = document.getElementById('event');
+      const selectedEventId = eventSelect.options[eventSelect.selectedIndex].getAttribute('data-id');
+      const selectedEvent = eventData.find(event => event.id == selectedEventId);
+      if (selectedEvent) {
+        // Since type_class_tickets is an array, we'll show options
+        let typeClassTicketsHtml = '';
+        let priceDisplay = '';
+        if (selectedEvent.type_class_tickets && selectedEvent.type_class_tickets.length > 0) {
+
+          typeClassTicketsHtml = `
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <label for="ticket_type_class" class="form-label">Chọn loại vé:</label>
+                <select class="form-control" id="ticket_type_class" name="typeClassTicket" onchange="updateTicketPrice()" required>
+                  <option value="">-- Chọn loại vé --</option>
+                  ${selectedEvent.type_class_tickets.map(ticket =>
+                    `<option value="${ticket.id}" data-price="${ticket.price}">
+                     ${ticket.type_ticket.name} (${ticket.class_ticket.name}) --- Giá : (${parseInt(ticket.price).toLocaleString()} VNĐ)
+                    </option>`
+                  ).join('')}
+                </select>
+              </div>
+            </div>
+          `;
+          priceDisplay = 'Vui lòng chọn loại vé';
+        } else {
+          priceDisplay = 'Không có thông tin vé';
+        }
+        document.getElementById('soLuong').innerHTML = typeClassTicketsHtml;
+        // Add script for updating price when ticket type changes
+        const scriptElement = document.createElement('script');
+        scriptElement.innerHTML = `
+          function updateTicketPrice() {
+            const select = document.getElementById('ticket_type_class');
+            if (select.value) {
+              const price = select.options[select.selectedIndex].getAttribute('data-price');
+              document.getElementById('basePrice').textContent = parseInt(price).toLocaleString() + ' VNĐ';
+              check()
+    document.querySelector('.seat-map').style.display = 'block';
+            } else {
+            }
+          }
+        `;
+        document.body.appendChild(scriptElement);
+      }
       if (eventSelect.value) {
         try {
           const response = await fetch(`http://localhost:3000/ticket/${eventSelect.value}`);
@@ -198,17 +248,17 @@
     document.getElementById('seatRender').value = list
     document.querySelector('.seat-map').style.display = 'none';
     const selectedOption = document.getElementById('event').selectedOptions[0];
-    const price = selectedOption.getAttribute('data-price');
+    const price = document.getElementById('basePrice').textContent.replace(' VNĐ', '').replace(/,/g, '');
     const quantity = list.length;
     const discount = Number(document.getElementById('discount').value);
     const basePrice = Number(price);
     const discountAmount = (quantity * price) * discount / 100;
     const totalPrice = (quantity * price) - discountAmount;
-    document.getElementById('basePrice').textContent = basePrice.toLocaleString() + ' VNĐ';
     document.getElementById('quantity').textContent = quantity;
     document.getElementById('discountAmount').textContent = discountAmount.toLocaleString() + ' VNĐ';
     document.getElementById('totalPrice').textContent = totalPrice.toLocaleString() + ' VNĐ';
   }
+
   function check2() {
     const list = []
     Array.from(document.getElementsByClassName("selected")).forEach(seat => {
@@ -217,7 +267,7 @@
     })
     document.querySelector('.seat-map').style.display = 'none';
     const selectedOption = document.getElementById('event').selectedOptions[0];
-    const price = selectedOption.getAttribute('data-price');
+    const price = document.getElementById('basePrice').textContent.replace(' VNĐ', '').replace(/,/g, '');
     const quantity = list.length;
     const discount = Number(document.getElementById('discount').value);
     const basePrice = Number(price);
@@ -228,7 +278,6 @@
     document.getElementById('discountAmount').textContent = discountAmount.toLocaleString() + ' VNĐ';
     document.getElementById('totalPrice').textContent = totalPrice.toLocaleString() + ' VNĐ';
   }
-
   const seatLayout = {
     'A': 11,
     'B': 12,

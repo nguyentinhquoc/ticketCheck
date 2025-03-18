@@ -4,30 +4,64 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
+import { TypeClassTicket } from 'src/type_class_ticket/entities/type_class_ticket.entity';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    @InjectRepository(TypeClassTicket)
+    private typeClassTicketRepository: Repository<TypeClassTicket>
   ) {}
+  async update(id: number, updateEventDto: UpdateEventDto) {
+    // Extract ticket_types and ticket_classes from updateEventDto if they exist
+    const { ticket_types, ticket_classes, ticket_prices, ...eventData } = updateEventDto;
 
-
+    // Only update the event with the filtered data
+    return this.eventRepository.update(id, eventData);
+  }
   findOne(id: number) {
     return this.eventRepository.findOne({where: {id}});
   }
-
+  findEventTickets(id: number) {
+    return this.eventRepository.findOne({where: {id}, relations: ['tickets']});
+  }
   async create(createEventDto: CreateEventDto) {
     const newEvent = this.eventRepository.create(createEventDto);
     return await this.eventRepository.save(newEvent);
   }
-
+  async findAll3() {
+    const events = await this.eventRepository.find({
+      relations: ['type_class_tickets', 'type_class_tickets.class_ticket', 'type_class_tickets.type_ticket']
+    });
+    // Add min and max price to each event
+    return events.map(event => {
+      if (event.type_class_tickets && event.type_class_tickets.length > 0) {
+        const prices = event.type_class_tickets.map(tct => tct.price);
+        return {
+          ...event,
+          min_price: Math.min(...prices),
+          max_price: Math.max(...prices)
+        };
+      }
+      return {
+        ...event,
+        min_price: null,
+        max_price: null
+      };
+    });
+  }
+  findAll2() {
+    return this.eventRepository.find({});
+  }
   findAll() {
     return this.eventRepository.find({
       where: {
-      start_date: MoreThan(new Date()),
-      sale_date: LessThan(new Date())
-      }
+        start_date: MoreThan(new Date()),
+        sale_date: LessThan(new Date())
+      },
+      relations: ['type_class_tickets','type_class_tickets.class_ticket','type_class_tickets.type_ticket']
     });
   }
   findSeat() {
@@ -59,6 +93,23 @@ export class EventService {
       'N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8', 'N9', 'N10', 'N11', 'N12'
       ]
     }
+  }
+
+  async createTypeClassTicket(data: {
+    eventId: number;
+    typeId: number;
+    classId: number;
+    price: number;
+  }) {
+    // First, add proper @InjectRepository for TypeClassTicket in constructor
+    const typeClassTicket = this.typeClassTicketRepository.create({
+      event: { id: data.eventId },
+      class_ticket: { id: data.classId },
+      price: data.price,
+      type_ticket: { id: data.typeId },
+    });
+    // Don't forget to save the created entity
+    return this.typeClassTicketRepository.save(typeClassTicket);
   }
 
 }

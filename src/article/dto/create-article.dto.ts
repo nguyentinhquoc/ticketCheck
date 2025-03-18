@@ -21,4 +21,6 @@ export class CreateArticleDto {
 
   @IsOptional()
   areaSmall?: number; // ID của AreaSmall
+
+  description?: string;
 }

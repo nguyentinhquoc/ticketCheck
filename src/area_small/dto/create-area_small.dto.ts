@@ -1,1 +1,4 @@
-export class CreateAreaSmallDto {}
+export class CreateAreaSmallDto {
+  image: string;
+  description: string;
+}

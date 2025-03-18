@@ -43,6 +43,13 @@ export class AccountController {
       sameSite: 'strict', // Chống CSRF
       maxAge: 3 * 60 * 60 * 1000 // Hết hạn sau 3 giờ
     })
+    if (account.role === 'admin') {
+      return res.redirect(`/`)
+    }else if (account.role === 'soatVe') {
+      return res.redirect(`/ticket/check`)
+    }else if (account.role === 'banVe') {
+      return res.redirect(`/ticket/add`)
+    }
     return res.redirect(`/`)
   }
 }

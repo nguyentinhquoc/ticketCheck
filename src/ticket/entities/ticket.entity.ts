@@ -1,5 +1,6 @@
 import { Account } from 'src/account/entities/account.entity'
 import { Event } from 'src/event/entities/event.entity'
+import { TypeClassTicket } from 'src/type_class_ticket/entities/type_class_ticket.entity'
 import { User } from 'src/user/entities/user.entity'
 import {
   Entity,
@@ -28,4 +29,6 @@ export class Ticket {
   discount: number
   @CreateDateColumn()
   CreatedAt: Date
+  @ManyToOne(() => TypeClassTicket, typeClassTicket => typeClassTicket.tickets, { onDelete: 'CASCADE' })
+  typeClassTicket: TypeClassTicket
 }

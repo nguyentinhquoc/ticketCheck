@@ -1,0 +1,95 @@
+<%- include('../../header') %>
+<!-- Page Title -->
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="/">Trang chủ</a></li>
+        <li class="current">Chỉnh sửa hình ảnh</li>
+      </ol>
+    </div>
+  </nav>
+</div><!-- End Page Title -->
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Chỉnh sửa hình ảnh</h1>
+  </div><!-- End Section Title -->
+  <div class="container mt-5">
+    <form action="/gallery/<%= gallery.id %>/edit" method="POST" enctype="multipart/form-data">
+      <!-- Tiêu đề -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Tiêu đề:</label>
+        <input type="text" class="form-control" id="title" name="title" value="<%= gallery.title %>" required>
+      </div>
+      <!-- Mô tả -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Mô tả:</label>
+        <textarea class="form-control" id="description" name="description" rows="3"><%= gallery.description %></textarea>
+      </div>
+      <!-- Hình ảnh hiện tại -->
+      <div class="mb-3">
+        <label class="form-label">Hình ảnh hiện tại:</label>
+        <div class="mt-2">
+          <img src="/uploads/gallery/<%= gallery.imagePath %>" class="img-thumbnail" style="max-height: 200px;" alt="Current image">
+        </div>
+      </div>
+      <!-- Cập nhật hình ảnh mới (tùy chọn) -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Cập nhật hình ảnh mới (để trống nếu không thay đổi):</label>
+        <input type="file" class="form-control" id="image" name="imagePath" accept="image/*">
+        <div class="mt-2">
+          <img id="imagePreview" class="img-thumbnail d-none" style="max-height: 200px;" alt="Image preview">
+        </div>
+      </div>
+      <!-- Nút gửi -->
+      <button type="submit" class="btn btn-primary">Cập nhật hình ảnh</button>
+    </form>
+  </div>
+</section><!-- /Starter Section Section -->
+
+<script>
+  // Image preview functionality
+  document.getElementById('image').addEventListener('change', function(e) {
+    const imagePreview = document.getElementById('imagePreview');
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imagePreview.setAttribute('src', e.target.result);
+        imagePreview.classList.remove('d-none');
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    } else {
+      imagePreview.classList.add('d-none');
+      imagePreview.removeAttribute('src');
+    }
+  });
+
+  // Form validation
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Get form values
+    const title = document.getElementById('title').value.trim();
+
+    let isValid = true;
+    const errors = [];
+
+    // Validate title
+    if (title.length < 3 || title.length > 200) {
+      errors.push('Tiêu đề phải từ 3 đến 200 ký tự');
+      isValid = false;
+    }
+
+    // Show errors or submit form
+    if (!isValid) {
+      alert(errors.join('\n'));
+    } else {
+      this.submit();
+    }
+  });
+</script>
+
+<%- include('../../footer') %>

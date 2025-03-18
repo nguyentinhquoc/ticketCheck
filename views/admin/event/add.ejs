@@ -18,13 +18,12 @@
     <h1>Thêm lịch diễn</h1>
   </div><!-- End Section Title -->
   <div class="container mt-5">
-    <form action="/event/add" method="POST">
+    <form action="/event/add" method="POST" enctype="multipart/form-data">
       <!-- Tên sự kiện -->
       <div class="mb-3">
         <label for="name" class="form-label">Tên sự kiện:</label>
         <input type="text" class="form-control" id="name" name="name" required>
       </div>
-
       <!-- Mô tả -->
       <div class="mb-3">
         <label for="description" class="form-label">Mô tả ngắn:</label>
@@ -32,28 +31,53 @@
       </div>
       <!-- Giá vé -->
       <div class="mb-3">
-        <label for="price" class="form-label">Giá vé:</label>
-        <input type="number" class="form-control" id="price" name="price" required>
+        <label class="form-label">Loại vé và giá:</label>
+        <div id="ticket-types-container">
+          <div class="ticket-type-entry border p-3 mb-3">
+            <div class="row">
+              <div class="col-md-4">
+                <label>Loại vé:</label>
+                <select class="form-select" name="ticket_types[]" required>
+                  <% typeTickets.forEach(function(type) { %>
+                  <option value="<%= type.id %>"><%= type.name %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>Hạng vé:</label>
+                <select class="form-select" name="ticket_classes[]" required>
+                  <% classTickets.forEach(function(cls) { %>
+                  <option value="<%= cls.id %>"><%= cls.name %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label>Giá:</label>
+                <input type="number" class="form-control" name="ticket_prices[]" required>
+              </div>
+              <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remove-ticket-type">Xóa</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-success" id="add-ticket-type">Thêm loại vé</button>
       </div>
-
+      <!-- Thời gian bắt đầu -->
       <div class="mb-3">
         <label for="startTime" class="form-label">Thời gian bắt đầu:</label>
-        <input type="datetime-local" class="form-control" id="startTime" name="start_date" required>
+        <input type="datetime-local" class="form-control" id="startTime" name="start_date" required >
       </div>
-
       <!-- Thời gian kết thúc -->
       <div class="mb-3">
         <label for="endTime" class="form-label">Thời gian kết thúc:</label>
-        <input type="datetime-local" class="form-control" id="endTime" name="end_date" required>
+        <input type="datetime-local" class="form-control" id="endTime" name="end_date" required >
       </div>
-
       <!-- Thời gian bắt đầu bán vé -->
       <div class="mb-3">
         <label for="startSales" class="form-label">Thời gian bắt đầu bán vé:</label>
-        <input type="datetime-local" class="form-control" id="startSales" name="sale_date" required>
+        <input type="datetime-local" class="form-control" id="startSales" name="sale_date" required >
       </div>
-
-
       <div class="mb-3">
         <label for="main_image" class="form-label">Ảnh chính:</label>
         <input type="file" class="form-control" id="main_image" name="main_image" accept="image/*">
@@ -74,21 +98,16 @@
         <label for="sub_image4" class="form-label">Ảnh phụ 4:</label>
         <input type="file" class="form-control" id="sub_image4" name="sub_image4" accept="image/*">
       </div>
-
-
       <div class="mb-3">
         <label for="content" class="form-label">Chi tiết sự kiện:</label>
         <textarea name="content" id="default"></textarea>
       </div>
-
       <!-- Thời gian bắt đầu -->
-
       <!-- Số lượng vé -->
       <div class="mb-3">
         <label for="quantity" class="form-label">Số lượng vé:</label>
         <input type="hidden" value="1" class="form-control" id="quantity" name="quantity" required>
       </div>
-
       <!-- Nút gửi -->
       <button type="submit" class="btn btn-primary">Tạo sự kiện</button>
     </form>
@@ -96,7 +115,31 @@
   </div>
 </section><!-- /Starter Section Section -->
 <script>
+  document.getElementById('add-ticket-type').addEventListener('click', function() {
+    const container = document.getElementById('ticket-types-container');
+    const newEntry = container.children[0].cloneNode(true);
+    // Clear the values
+    newEntry.querySelectorAll('select, input').forEach(input => input.value = '');
+    // Add remove button functionality
+    newEntry.querySelector('.remove-ticket-type').addEventListener('click', function() {
+      if (container.children.length > 1) {
+        this.closest('.ticket-type-entry').remove();
+        checkDuplicateTickets(); // Recheck after removal
+      }
+    });
+    container.appendChild(newEntry);
+    // Add validation listeners to the new row
+    addTicketValidationListeners();
+  });
+
   document.querySelector('form').addEventListener('submit', function(e) {
+    // Check for duplicate ticket combinations first
+    if (!checkDuplicateTickets()) {
+      e.preventDefault();
+      return;
+    }
+
+    // Existing validation code
     e.preventDefault();
     // Get all form values
     const name = document.getElementById('name').value.trim();
@@ -104,53 +147,51 @@
     const startTime = new Date(document.getElementById('startTime').value);
     const endTime = new Date(document.getElementById('endTime').value);
     const startSales = new Date(document.getElementById('startSales').value);
-    const price = Number(document.getElementById('price').value);
+    const price = Number(document.getElementsByClassName('ticket_prices').value);
     const quantity = Number(document.getElementById('quantity').value);
-
     let isValid = true;
     const errors = [];
-
     // Validate name
     if (name.length < 5 || name.length > 200) {
       errors.push('Tên sự kiện phải từ 5 đến 200 ký tự');
       isValid = false;
     }
-
     // Validate description
     if (description.length < 10) {
       errors.push('Mô tả phải có ít nhất 10 ký tự');
       isValid = false;
     }
-
     // Validate dates
     const now = new Date();
     if (startTime <= now) {
       errors.push('Thời gian bắt đầu phải lớn hơn thời gian hiện tại');
       isValid = false;
     }
-
     if (endTime <= startTime) {
       errors.push('Thời gian kết thúc phải sau thời gian bắt đầu');
       isValid = false;
     }
-
     if (startSales >= startTime) {
       errors.push('Thời gian bắt đầu bán vé phải trước thời gian bắt đầu sự kiện');
       isValid = false;
     }
-
-    // Validate price
-    if (price <= 0 || !Number.isInteger(price)) {
-      errors.push('Giá vé phải là số nguyên dương');
-      isValid = false;
-    }
-
     // Validate quantity
     if (quantity <= 0 || !Number.isInteger(quantity) || quantity > 10000) {
       errors.push('Số lượng vé phải là số nguyên dương và không quá 10000');
       isValid = false;
     }
-
+    // Validate ticket information
+    const ticketTypes = document.getElementsByName('ticket_types[]');
+    const ticketClasses = document.getElementsByName('ticket_classes[]');
+    const ticketPrices = document.getElementsByName('ticket_prices[]');
+    for (let i = 0; i < ticketPrices.length; i++) {
+      const price = Number(ticketPrices[i].value);
+      if (price <= 0 || !Number.isInteger(price)) {
+        errors.push('Tất cả giá vé phải là số nguyên dương');
+        isValid = false;
+        break;
+      }
+    }
     // Show errors or submit form
     if (!isValid) {
       alert(errors.join('\n'));
@@ -158,6 +199,71 @@
       this.submit();
     }
   });
+
+  // Add remove button functionality to initial ticket type entry
+  document.querySelector('.remove-ticket-type').addEventListener('click', function() {
+    if (document.getElementById('ticket-types-container').children.length > 1) {
+      this.closest('.ticket-type-entry').remove();
+    }
+  });
+
+  // Function to check for duplicate ticket type and class combinations
+  function checkDuplicateTickets() {
+    const ticketEntries = document.querySelectorAll('.ticket-type-entry');
+    const combinations = new Map();
+    let hasDuplicate = false;
+
+    ticketEntries.forEach((entry, index) => {
+      const typeSelect = entry.querySelector('select[name="ticket_types[]"]');
+      const classSelect = entry.querySelector('select[name="ticket_classes[]"]');
+
+      const typeValue = typeSelect.value;
+      const classValue = classSelect.value;
+      const comboKey = `${typeValue}-${classValue}`;
+
+      // Reset previous error styling
+      typeSelect.classList.remove('is-invalid');
+      classSelect.classList.remove('is-invalid');
+
+      if (combinations.has(comboKey)) {
+        // Mark both current and previous selections as invalid
+        typeSelect.classList.add('is-invalid');
+        classSelect.classList.add('is-invalid');
+
+        const previousIndex = combinations.get(comboKey);
+        const previousEntry = ticketEntries[previousIndex];
+        previousEntry.querySelector('select[name="ticket_types[]"]').classList.add('is-invalid');
+        previousEntry.querySelector('select[name="ticket_classes[]"]').classList.add('is-invalid');
+
+        hasDuplicate = true;
+      } else {
+        combinations.set(comboKey, index);
+      }
+    });
+
+    if (hasDuplicate) {
+      alert('Không thể chọn trùng loại vé và hạng vé. Vui lòng chọn lại.');
+    }
+
+    return !hasDuplicate;
+  }
+
+  // Add event listeners to ticket type and class selects
+  function addTicketValidationListeners() {
+    const ticketTypes = document.querySelectorAll('select[name="ticket_types[]"]');
+    const ticketClasses = document.querySelectorAll('select[name="ticket_classes[]"]');
+
+    ticketTypes.forEach(select => {
+      select.addEventListener('change', checkDuplicateTickets);
+    });
+
+    ticketClasses.forEach(select => {
+      select.addEventListener('change', checkDuplicateTickets);
+    });
+  }
+
+  // Initialize validation listeners for initial form fields
+  addTicketValidationListeners();
 </script>
 <script src="/tinymce/tinymce.min.js"></script>
 <script>
@@ -200,5 +306,4 @@
     content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}'
   })
 </script>
-
 <%- include('../../footer') %>

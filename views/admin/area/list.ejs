@@ -23,35 +23,43 @@
   <div class="d-flex gap-3 align-items-center mb-5" style="width: 50vw; margin: 0 auto;">
 
     <!-- Form 1 -->
-    <form action="/area" method="post" id="form1" class="w-100 formContainer">
+    <form action="/area" method="post" id="form1" class="w-100 formContainer" enctype="multipart/form-data">
       <h4>Thêm vị trí chính</h4>
       <div class="form-group">
-        <label for="">Tên vị trí</label>
-        <input type="text" class="form-control " placeholder="" name="name">
+        <label for>Tên vị trí</label>
+        <input type="text" class="form-control " placeholder name="name">
       </div>
-        <input type="hidden" name="language" value="<%=language%>">
+      <input type="hidden" name="language" value="<%=language%>">
       <div class="form-group">
-        <label for="">Số vị trí</label>
-        <input type="number" class="form-control " placeholder="" name="code">
+        <label for>Số vị trí</label>
+        <input type="number" class="form-control " placeholder name="code">
+      </div>
+      <div class="form-group">
+        <label for>Ảnh đại diện</label>
+        <input type="file" class="form-control" name="image">
       </div>
       <div class="form-group">
         <input type="submit" class="btn btn-primary w-100 mt-3" value="Thêm mới">
       </div>
     </form>
-    <form action="/area-small" method="post" id="form1" class="w-100 formContainer">
+    <form action="/area-small" method="post" id="form1" class="w-100 formContainer" enctype="multipart/form-data">
       <h4>Thêm vị trí phụ thuộc</h4>
       <div class="form-group">
-        <label for="">Tên vị trí</label>
-        <input type="text" class="form-control " placeholder="" name="name">
+        <label for>Tên vị trí</label>
+        <input type="text" class="form-control " placeholder name="name">
       </div>
       <div class="form-group">
         <input type="hidden" name="language" value="<%=language%>">
-        <label for="">Chọn vị trí bị phụ thuộc</label>
-        <select class="form-select " name="area" id="">
+        <label for>Chọn vị trí bị phụ thuộc</label>
+        <select class="form-select " name="area" id>
           <% areas.forEach(area => { %>
           <option value="<%= area.id %>"><%= area.code %>. <%= area.name %></option>
           <% }) %>
         </select>
+      </div>
+      <div class="form-group">
+        <label for>Ảnh đại diện</label>
+        <input type="file" class="form-control " placeholder name="image">
       </div>
       <div class="form-group">
         <input type="submit" class="btn btn-primary w-100 mt-3" value="Thêm mới">
@@ -60,25 +68,41 @@
   </div>
   <div style="width: 50vw; margin: 0 auto;">
     <button class="btn btn-primary m-3" id="addForm">Thêm mới</button>
-    <ul class="list-group">
-      <% areas.forEach(area => { %>
-      <li class="list-group-item">
-        <strong class="toggle-area d-block py-2">
-          <i class=" bi bi-chevron-right me-2"></i> <a href="/articles/l/<%= area.id %>"><%= area.code %>. <%= area.name %></a></strong>
-        <ul class="sub-list list-group ms-3">
-          <!-- Thêm class list-group & ms-3 để lùi vào -->
-          <%
-        let stt = 0
-        area.areaSmalls.forEach(areaSmall => { %>
-          <li class="list-group-item">
-            <a href="/articles/m/<%= areaSmall.id %>"> <%= area.code %>.<%= stt+=1 %>. <%= areaSmall.name %>
-            </a>
-          </li>
-          <% }) %>
-        </ul>
-      </li>
-      <% }) %>
-    </ul>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+        <th scope="col">STT</th>
+        <th scope="col">Tên</th>
+        <th scope="col">Ảnh</th>
+        <th scope="col">Mô tả</th>
+        <th scope="col">Xem</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% areas.forEach(area => { %>
+        <tr class="table-primary">
+        <td><strong><%= area.code %></strong></td>
+        <td><strong><%= area.name %></strong></td>
+        <td><img src="/uploads/area/<%= area.image %>" alt="" class="img-thumbnail" style="width: 100px;"></td>
+        <td><%= area.description %></td>
+        <td><a href="/articles/l/<%= area.id %>" class="btn btn-sm btn-info">Xem</a></td>
+        </tr>
+        <%
+          let stt = 0
+          area.areaSmalls.forEach(areaSmall => { %>
+        <tr>
+        <td><%=area.code %>.<%= stt+=1 %></td>
+        <td><%= areaSmall.name %></td>
+        <td><img src="/uploads/area/<%= areaSmall.image %>" alt="" class="img-thumbnail" style="width: 100px;"></td>
+        <td><%= areaSmall.description %></td>
+        <td><a href="/articles/m/<%= areaSmall.id %>" class="btn btn-sm btn-info">Xem</a></td>
+        </tr>
+        <% }) %>
+        <% }) %>
+      </tbody>
+      </table>
+    </div>
   </div>
   <!-- Nhúng jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -100,7 +124,6 @@
       });
     });
   </script>
-
 
 </section><!-- /Starter Section Section -->
 <%- include('../../footer') %>

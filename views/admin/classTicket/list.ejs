@@ -1,0 +1,43 @@
+<%- include('../../header') %>
+
+<div class="page-title">
+  <div class="heading"></div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="/">Trang chủ</a></li>
+        <li class="current">Hạng vé</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+<section id="starter-section" class="starter-section section">
+  <div class="container section-title" data-aos="fade-up">
+    <h1>Danh sách hạng vé</h1>
+  </div>
+  <div class="container" data-aos="fade-up">
+    <a href="/class-ticket/create" class="btn btn-primary mb-3">Thêm hạng vé</a>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Tên</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% classTickets.forEach(function(classTicket, index) { %>
+        <tr>
+          <td><%= index+=1 %></td>
+          <td><%= classTicket.name %></td>
+          <td>
+            <a href="/class-ticket/edit/<%= classTicket.id %>"
+               class="btn btn-warning btn-sm">Sửa</a>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../../footer') %>

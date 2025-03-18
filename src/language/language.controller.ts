@@ -48,7 +48,7 @@ export class LanguageController {
       sameSite: 'strict',
       maxAge: 3 * 60 * 60 * 1000 * 10
     })
-    res.redirect('/')
+    res.redirect('/admin')
   }
 
   @Get()

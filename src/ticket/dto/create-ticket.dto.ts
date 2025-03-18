@@ -28,4 +28,6 @@ export class CreateTicketDto {
 
   @IsString()
   seat:Array<string>;
+  @IsNumber()
+  typeClassTicket : number;
 }

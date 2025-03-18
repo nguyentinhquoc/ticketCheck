@@ -112,7 +112,6 @@ export class ArticleController {
     return { articles }
   }
 
-  @Public()
   @Get(':size/:idSize')
   @Render('admin/article/detail')
   async detail (@Param() params: { size: string; idSize: string }) {

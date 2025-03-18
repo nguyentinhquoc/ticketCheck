@@ -22,4 +22,9 @@ export class AreaSmall {
     onDelete: 'CASCADE'
   })
   language: Language
+  @Column()
+  image: string;
+
+  @Column({ nullable: true })
+  description: string
 }

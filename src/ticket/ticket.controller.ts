@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  Render
+  Render,
+  Res
 } from '@nestjs/common'
 import { TicketService } from './ticket.service'
 import { EventService } from '../event/event.service'
@@ -15,26 +16,34 @@ import { UpdateTicketDto } from './dto/update-ticket.dto'
 import { UserService } from 'src/user/user.service'
 import * as QRCode from 'qrcode'
 import { Public } from 'src/decorators/public.decorator'
+import { TypeClassTicket } from '../type_class_ticket/entities/type_class_ticket.entity';
+import { TypeClassTicketService } from 'src/type_class_ticket/type_class_ticket.service'
+import { Response } from 'express'
+import { BanVe } from 'src/decorators/banVe.decorator'
+import { SoatVe } from 'src/decorators/soatVe.decorator'
 @Controller('ticket')
 export class TicketController {
   constructor (
     private readonly ticketService: TicketService,
     private readonly eventService: EventService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly typeClassTicketService: TypeClassTicketService,
   ) {}
   @Get()
   @Render('admin/ticket/list')
-  async findAll () {
+  async findAll(@Res() res: Response) {
+    console.log(res.locals.login)
     const tickets = await this.ticketService.findList()
     return { tickets }
   }
 
+  @SoatVe()
   @Get('check')
   @Render('admin/ticket/check')
   async checkQr() {
-
     return { tickets:[] }
   }
+
   @Post('check')
   @Render('admin/ticket/check')
   async checkQrP (@Body('code') code: string) {
@@ -58,17 +67,18 @@ export class TicketController {
     }
   }
 
-
+  @BanVe()
   @Get('add')
   @Render('admin/ticket/add')
   async createG () {
     const events = await this.eventService.findAll()
-    const users = await this.userService.findAll()
+      const users = await this.userService.findAll()
     return {
       events,
       users
     }
   }
+
   @Get(':idEvent')
   async findByEvent (@Param('idEvent') idEvent: string) {
     if (!idEvent || isNaN(+idEvent)) {
@@ -82,19 +92,20 @@ export class TicketController {
   @Post('add')
   @Render('admin/ticket/xuatTicket')
   async createP (@Body() createTicketDto: CreateTicketDto) {
+    createTicketDto.seat = [...new Set(createTicketDto.seat)];
+    for (let index = 0; index < createTicketDto.seat.length; index++) {
+      const seat = createTicketDto.seat[index]
+      const ticket = await this.ticketService.findBySeat(
+        seat,
+        createTicketDto.eventId
+      )
+      if (ticket) {
+        return {
+          message: 'Seat already taken'
+        }
+      }
+    }
     let codeQr = []
-    // for (let index = 0; index < createTicketDto.seat.length; index++) {
-    //   const seat = createTicketDto.seat[index]
-    //   const ticket = await this.ticketService.findBySeat(
-    //     seat,
-    //     createTicketDto.eventId
-    //   )
-    //   if (ticket) {
-    //     return {
-    //       message: 'Seat already taken'
-    //     }
-    //   }
-    // }
     if (!createTicketDto.userId) {
       const user = await this.userService.create({
         name: createTicketDto.name,
@@ -111,6 +122,7 @@ export class TicketController {
       const eventId = createTicketDto.eventId
       const accountId = 1
       const userId = createTicketDto.userId
+      const typeclassTicket = createTicketDto.typeClassTicket
       await this.ticketService.create(
         seat,
         code,
@@ -118,16 +130,21 @@ export class TicketController {
         quantity,
         eventId,
         accountId,
-        userId
+        userId,
+        typeclassTicket
       )
       {
       }
       const event = await this.eventService.findOne(eventId)
+      const typeClassTicket = await this.typeClassTicketService.findOne(+createTicketDto.typeClassTicket)
       const ticketInfo = {
         code,
         seat,
         eventName: event.name,
-        eventDate: event.start_date
+        eventBackground: event.main_image,
+        eventDate: event.start_date,
+        type_ticket: typeClassTicket.type_ticket.name,
+        class_ticket: typeClassTicket.class_ticket.name
       }
       codeQr.push(JSON.stringify(ticketInfo))
     }
@@ -144,6 +161,7 @@ export class TicketController {
       }
     }
   }
+
   @Delete(':id')
   remove (@Param('id') id: string) {
     return this.ticketService.remove(+id)
